@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+click_mask_size=(1920, 1080)
+click_mask_center=true
+click_mask_bottom=false
+mode_panel=true
+start_area=false
+settings_panel=true
+settings_closed=true
+credits_panel=true
+credits_closed=true
+story_mode=false
+current_scene=res://battle/Battle.tscn
