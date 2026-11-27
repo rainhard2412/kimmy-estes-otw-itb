@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_color"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 0.5)
+
+[node name="ColorButton" type="Button"]
+custom_minimum_size = Vector2(20, 24)
+size_flags_horizontal = 3
+focus_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_color")
+theme_override_styles/hover = SubResource("StyleBoxFlat_color")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_color")
+theme_override_styles/focus = SubResource("StyleBoxFlat_color")

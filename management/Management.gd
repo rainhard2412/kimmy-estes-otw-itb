@@ -16,6 +16,11 @@ extends Node
 ## trigger_error()), and clicking an errored node plays its repair minigame.
 ## Enemies keep coming while the map is open.
 ##
+## Look and layout: edit management/Management.tscn in the editor. Scene
+## contract (unique names): %World > %Arena (management/Arena.tscn)
+## %HUD > %IntegrityBar %StatusLabel %AlertLabel %MapButton
+## %NodeMap (management/NodeMap.tscn). Move or restyle any of them freely.
+##
 ## When an enemy touches the WAHANA the whole sim pauses (errors stop, the map
 ## closes, an open repair minigame freezes with its progress kept) and the
 ## turn-based battle plays on top. Afterwards everything resumes.
@@ -53,14 +58,14 @@ var _mg: Minigame = null
 var _previous_story_mode := true
 var _started := false
 
-var _world := Node2D.new()
-var _arena := ArenaView.new()
-var _hud := CanvasLayer.new()
-var _map_layer := CanvasLayer.new()
-var _integrity_bar := ProgressBar.new()
-var _status := Label.new()
-var _alert := Label.new()
-var _map_button := Button.new()
+@onready var _world: Node2D = %World
+@onready var _arena: Arena = %Arena
+@onready var _hud: CanvasLayer = %HUD
+@onready var _integrity_bar: ProgressBar = %IntegrityBar
+@onready var _status: Label = %StatusLabel
+@onready var _alert: Label = %AlertLabel
+@onready var _map_button: Button = %MapButton
+@onready var _map: NodeMap = %NodeMap
 var _toast := ""
 var _toast_until := 0
 
@@ -91,18 +96,11 @@ func start(cfg: ManagementConfig = null) -> void:
 	sim.error_triggered.connect(_on_error_triggered)
 	sim.repaired.connect(func(id: String) -> void: _say("%s diperbaiki" % _name_of(id)))
 
-	add_child(_world)
-	_arena.walk = walk
-	_world.add_child(_arena)
-
-	_hud.layer = 5
-	add_child(_hud)
-	_build_hud()
-
-	_map_layer.layer = 10
-	add_child(_map_layer)
-	map = NodeMap.new()
-	_map_layer.add_child(map)
+	_arena.bind(walk)
+	_integrity_bar.max_value = config.integrity_max
+	_integrity_bar.value = config.integrity_max
+	_map_button.pressed.connect(toggle_map)
+	map = _map
 	map.bind(sim)
 	map.node_pressed.connect(request_repair)
 	_update_hud()
@@ -207,7 +205,7 @@ func request_repair(id: String) -> void:
 		if mg == null:
 			push_error("Management: repair_scene of '%s' is not a Minigame; using color-match" % id)
 	if mg == null:
-		mg = ColorMatchMinigame.new()
+		mg = ColorMatchMinigame.create()
 
 	_repairing = id
 	_mg = mg
@@ -308,32 +306,6 @@ func _finish(won: bool, reason: String) -> void:
 
 
 # ------------------------------------------------------------------ HUD
-
-func _build_hud() -> void:
-	_integrity_bar.position = Vector2(6, 4)
-	_integrity_bar.size = Vector2(110, 8)
-	_integrity_bar.max_value = config.integrity_max
-	_integrity_bar.value = config.integrity_max
-	_integrity_bar.show_percentage = false
-	_hud.add_child(_integrity_bar)
-
-	for l: Label in [_status, _alert]:
-		l.add_theme_font_size_override("font_size", 8)
-		l.add_theme_constant_override("outline_size", 3)
-		l.add_theme_color_override("font_outline_color", Color.BLACK)
-		_hud.add_child(l)
-	_status.position = Vector2(6, 14)
-	_alert.position = Vector2(6, 164)
-	_alert.size = Vector2(240, 12)
-
-	_map_button.text = "Sistem [Tab]"
-	_map_button.size = Vector2(70, 16)
-	_map_button.position = Vector2(244, 160)
-	_map_button.focus_mode = Control.FOCUS_NONE
-	_map_button.add_theme_font_size_override("font_size", 8)
-	_map_button.pressed.connect(toggle_map)
-	_hud.add_child(_map_button)
-
 
 func _update_hud() -> void:
 	if not _started:

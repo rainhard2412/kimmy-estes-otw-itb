@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="SkillData" format=3 uid="uid://poc0p4bhccfp"]
 
 [ext_resource type="Script" uid="uid://bivid6lbo07wb" path="res://data/SkillData.gd" id="1"]
-[ext_resource type="Resource" path="res://data/skills/circle_demo_config.tres" id="2"]
+[ext_resource type="Resource" uid="uid://yyr4j3puefr5" path="res://data/skills/circle_demo_config.tres" id="2"]
 [ext_resource type="Script" uid="uid://p6q0ym1x4yto" path="res://data/SkillEffect.gd" id="2_td05r"]
 [ext_resource type="Script" uid="uid://dwc32t4lwphv3" path="res://data/PenaltyThreshold.gd" id="3"]
 [ext_resource type="Script" uid="uid://hqippipctm84" path="res://data/effects/WeakenEffect.gd" id="4"]

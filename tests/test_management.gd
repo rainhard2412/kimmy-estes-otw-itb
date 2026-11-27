@@ -248,7 +248,7 @@ func test_pan_clamp() -> void:
 
 func test_color_match() -> void:
 	print("Color-match minigame")
-	var mg := ColorMatchMinigame.new()
+	var mg := ColorMatchMinigame.create()
 	mg.size = Vector2(160, 90)
 	add_child(mg)
 	var cfg := ColorMatchConfig.new()
@@ -276,7 +276,7 @@ func test_color_match() -> void:
 	check(result["wrong_clicks"] == 1, "wrong clicks are reported")
 	check(mg.choose(0) == false, "clicks after finishing are ignored")
 	mg.queue_free()
-	var m2 := ColorMatchMinigame.new()
+	var m2 := ColorMatchMinigame.create()
 	add_child(m2)
 	var cfg2 := ColorMatchConfig.new()
 	cfg2.rounds_needed = 0

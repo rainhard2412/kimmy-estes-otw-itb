@@ -4,9 +4,13 @@ extends Node2D
 ## Flow:  next wave -> PLAYER_TURN (1-2 actions) -> ENEMY_TURN -> PLAYER_TURN ...
 ##        wave cleared -> next wave ... last wave cleared -> WIN
 ##
-## Placeholder visuals are built in code (colored boxes); swap for sprites later.
-## The field (units) sits under a Camera2D so it can shake; the HUD sits on a
-## CanvasLayer so text and buttons stay still.
+## Look and layout live in battle/Battle.tscn (edit them in the editor):
+##   %Camera (shakes)  %Field > %PlayerUnit, %Enemies (EnemySlot markers decide
+##   where each enemy stands)  %TargetCursor
+##   HUD: %Log  %Hint  %Banner  %TimingBar  %MinigameSlot (where the circle
+##   minigame appears)  %SkillBar (one SkillButton per skill is added here)
+##   %ScreenFlash
+## Each enemy's own look is its `unit_scene` (battle/units/).
 ##
 ## To use from a story script:
 ##     var battle := preload("res://battle/Battle.tscn").instantiate()
@@ -59,22 +63,24 @@ var _wave_index := -1
 var _wave_round := 0
 var _used_this_turn: Array[int] = []
 
-# --- nodes (built in _build_ui) ---
-var _camera := Camera2D.new()
-var _player_box := ColorRect.new()
-var _player_label := Label.new()
-var _cursor := Polygon2D.new()
-var _hud := CanvasLayer.new()
-var _log := Label.new()
-var _hint := Label.new()
-var _banner := Label.new()
-var _bar := TimingBar.new()
+# --- nodes (all come from Battle.tscn) ---
+@onready var _camera: Camera2D = %Camera
+@onready var _player: PlayerUnit = %PlayerUnit
+@onready var _enemy_parent: Node2D = %Enemies
+@onready var _cursor: Node2D = %TargetCursor
+@onready var _log: Label = %Log
+@onready var _hint: Label = %Hint
+@onready var _banner: Label = %Banner
+@onready var _bar: TimingBar = %TimingBar
+@onready var _minigame_slot: Control = %MinigameSlot
+@onready var _skill_bar: Container = %SkillBar
+@onready var _flash_rect: ColorRect = %ScreenFlash
 var _buttons: Array[Button] = []
 
-const PLAYER_POS := Vector2(40, 62)
-const ENEMY_X := 180.0
-const ENEMY_SPACING := 44.0
-const ENEMY_Y := 62.0
+const SKILL_BUTTON := preload("res://battle/SkillButton.tscn")
+## Enemies stand on the EnemySlot markers in Battle.tscn. If a wave has more
+## enemies than slots, the extras continue to the right at this spacing.
+const EXTRA_SLOT_SPACING := 44.0
 const COLOR_DIALOGUE := Color(1.0, 0.85, 0.4)
 
 
@@ -87,75 +93,22 @@ func _ready() -> void:
 			push_warning("Skill '%s': %s" % [sk.display_name, w])
 	cooldowns.resize(skills.size())
 	cooldowns.fill(0)
-	_build_ui()
+	_setup_ui()
 	_refresh()
 	_next_wave()
 
 
 # ------------------------------------------------------------------ setup
 
-func _build_ui() -> void:
-	_camera.anchor_mode = Camera2D.ANCHOR_MODE_FIXED_TOP_LEFT
-	add_child(_camera)
-
-	_player_box.color = Color(0.3, 0.6, 1.0)
-	_player_box.size = EnemyUnit.SIZE
-	_player_box.position = PLAYER_POS
-	_player_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_player_box)
-	_player_label.position = PLAYER_POS + Vector2(-10, -24)
-	_player_label.size = Vector2(48, 22)
-	_player_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_small(_player_label)
-	add_child(_player_label)
-
-	_cursor.polygon = PackedVector2Array([Vector2(-4, 0), Vector2(4, 0), Vector2(0, 5)])
-	_cursor.color = Color.YELLOW
-	add_child(_cursor)
-
-	add_child(_hud)
-	_log.position = Vector2(6, 3)
-	_log.size = Vector2(308, 12)
-	_hint.position = Vector2(6, 14)
-	_hint.size = Vector2(308, 12)
-	_hint.modulate = Color(0.7, 0.9, 1.0)
-	for l: Label in [_log, _hint]:
-		_small(l)
-		l.autowrap_mode = TextServer.AUTOWRAP_OFF
-		l.clip_text = true
-		_hud.add_child(l)
-
-	_banner.add_theme_font_size_override("font_size", 16)
-	_banner.add_theme_constant_override("outline_size", 4)
-	_banner.add_theme_color_override("font_outline_color", Color.BLACK)
-	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_banner.position = Vector2(0, 110)
-	_banner.size = Vector2(320, 20)
-	_banner.hide()
-	_hud.add_child(_banner)
-
-	_bar.position = Vector2(80, 122)
-	_bar.size = Vector2(160, 8)
+func _setup_ui() -> void:
 	_bar.action = "defend"
 	_bar.caption = "pencet X pas di hijau!"
-	_hud.add_child(_bar)
-
+	# One SkillButton per skill. Layout (widths, spacing) is the HBoxContainer's.
 	for i in skills.size():
-		var b := Button.new()
-		var bw := (304.0 - 4.0 * (skills.size() - 1)) / skills.size()
-		b.position = Vector2(8 + i * (bw + 4.0), 136)
-		b.size = Vector2(bw, 36)
-		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		b.clip_text = true
-		b.focus_mode = Control.FOCUS_NONE   # arrows pick targets, not buttons
-		_small(b)
+		var b: Button = SKILL_BUTTON.instantiate()
 		b.pressed.connect(use_skill.bind(i))
-		_hud.add_child(b)
+		_skill_bar.add_child(b)
 		_buttons.append(b)
-
-
-func _small(c: Control) -> void:
-	c.add_theme_font_size_override("font_size", 8)
 
 
 # ------------------------------------------------------------------ input
@@ -218,13 +171,22 @@ func _spawn(list: Array[EnemyData]) -> void:
 	_enemies.clear()
 	_target = 0
 	for i in list.size():
-		var u := EnemyUnit.new().setup(list[i])
-		u.position = Vector2(ENEMY_X + i * ENEMY_SPACING, ENEMY_Y)
+		var u := list[i].make_unit()
+		u.position = _slot_position(i)
 		u.clicked.connect(_on_enemy_clicked)
-		add_child(u)
+		_enemy_parent.add_child(u)
 		_enemies.append(u)
 	_log_text("Batara Kala muncul! (%d)" % list.size())
 	_refresh()
+
+
+## Where enemy number `i` stands: its EnemySlot marker, or further right.
+func _slot_position(i: int) -> Vector2:
+	var slots: Array[Node] = _enemy_parent.get_children().filter(func(n: Node) -> bool: return n is Marker2D)
+	if i < slots.size():
+		return (slots[i] as Marker2D).position
+	var last: Vector2 = (slots[-1] as Marker2D).position if not slots.is_empty() else Vector2(180, 62)
+	return last + Vector2(EXTRA_SLOT_SPACING * (i - slots.size() + 1), 0.0)
 
 
 func _current_wave() -> WaveData:
@@ -327,10 +289,9 @@ func _play_circle_minigame(s: SkillData) -> Dictionary:
 		for k in cfg.count():
 			g.append(TimingBar.Result.MISS if k < auto_circle_misses else TimingBar.Result.PERFECT)
 		return CircleMinigame.build_result(g, cfg)
-	var mg := CircleMinigame.new()
-	mg.position = Vector2(0, 28)
-	mg.size = Vector2(320, 104)
-	_hud.add_child(mg)
+	var mg := CircleMinigame.create()
+	_minigame_slot.add_child(mg)
+	mg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	active_minigame = mg
 	mg.start(cfg)
 	var result: Dictionary = await mg.finished
@@ -405,7 +366,7 @@ func _enemy_turn() -> void:
 				e.data.label(), e.data.attack_name, dmg,
 				" (ditahan)" if result == TimingBar.Result.GOOD or defending else ""])
 			_shake(3.0)
-			_flash(_player_box)
+			_player.flash()
 		_refresh()
 		await _wait(0.6)
 
@@ -468,7 +429,7 @@ func _end(won: bool) -> void:
 # ------------------------------------------------------------------ view
 
 func _refresh() -> void:
-	_player_label.text = "Bara\n%d/%d" % [player_hp, player_max_hp]
+	_player.set_hp(player_hp, player_max_hp)
 	var my_turn := state == State.PLAYER_TURN
 	for i in _buttons.size():
 		var cd := cooldowns[i]
@@ -512,17 +473,6 @@ func _shake(strength: float, duration := 0.2) -> void:
 	t.tween_property(_camera, "offset", Vector2.ZERO, 0.04)
 
 
-func _flash(c: CanvasItem) -> void:
-	c.modulate = Color(3, 3, 3)
-	create_tween().tween_property(c, "modulate", Color.WHITE, 0.15)
-
-
 func _flash_screen() -> void:
-	var r := ColorRect.new()
-	r.color = Color(1, 0.9, 0.6, 0.8)
-	r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_hud.add_child(r)
-	var t := create_tween()
-	t.tween_property(r, "modulate:a", 0.0, 0.4)
-	t.tween_callback(r.queue_free)
+	_flash_rect.modulate.a = 1.0
+	create_tween().tween_property(_flash_rect, "modulate:a", 0.0, 0.4)

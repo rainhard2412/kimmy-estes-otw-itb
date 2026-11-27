@@ -51,7 +51,7 @@ func _ready() -> void:
 
 func test_timing_bar() -> void:
 	print("TimingBar.evaluate")
-	var bar := TimingBar.new()
+	var bar := TimingBar.create()
 	check(bar.evaluate(0.75) == TimingBar.Result.PERFECT, "center = PERFECT")
 	check(bar.evaluate(0.85) == TimingBar.Result.GOOD, "near = GOOD")
 	check(bar.evaluate(0.2) == TimingBar.Result.MISS, "far = MISS")

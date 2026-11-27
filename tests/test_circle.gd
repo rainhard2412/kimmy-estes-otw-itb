@@ -35,7 +35,7 @@ func _ready() -> void:
 	get_tree().quit(1 if failures else 0)
 
 func new_game(cfg: CircleMinigameConfig) -> CircleMinigame:
-	var mg := CircleMinigame.new()
+	var mg := CircleMinigame.create()
 	mg.size = Vector2(320, 104)
 	add_child(mg)
 	mg.start(cfg)
@@ -190,7 +190,7 @@ func test_positions_inside_area() -> void:
 	a.queue_free()
 	b.queue_free()
 	# A tiny play area must not crash
-	var tiny := CircleMinigame.new()
+	var tiny := CircleMinigame.create()
 	tiny.size = Vector2(10, 10)
 	add_child(tiny)
 	tiny.start(make_cfg(2))

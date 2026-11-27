@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://minigames/circle/CircleTarget.gd" id="1"]
+
+[sub_resource type="Gradient" id="Gradient_disc"]
+offsets = PackedFloat32Array(0, 0.9, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_disc"]
+gradient = SubResource("Gradient_disc")
+width = 64
+height = 64
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_ring"]
+offsets = PackedFloat32Array(0, 0.82, 0.88, 0.96, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0.95, 1, 1, 1, 0.95, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ring"]
+gradient = SubResource("Gradient_ring")
+width = 64
+height = 64
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="CircleTarget" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 28.0
+offset_bottom = 28.0
+mouse_filter = 2
+script = ExtResource("1")
+
+[node name="Disc" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 28.0
+offset_bottom = 28.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_disc")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Ring" type="TextureRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 28.0
+offset_bottom = 28.0
+mouse_filter = 2
+texture = SubResource("GradientTexture2D_ring")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Number" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_right = 28.0
+offset_bottom = 28.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 8
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1

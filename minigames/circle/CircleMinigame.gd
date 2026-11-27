@@ -3,8 +3,14 @@ extends Minigame
 ## OSU!-style circle minigame. Mouse click on a circle as its ring closes in
 ## on it (Z hits the oldest circle). Every knob lives in CircleMinigameConfig.
 ##
+## Look: edit minigames/circle/CircleMinigame.tscn, CircleTarget.tscn (the
+## circle that is repeated) and GradePopup.tscn (the PERFECT/GOOD/MISS text).
+## Scene contract (unique names): %Prompt (Label), %Circles (Control that holds
+## the circle nodes), %Popups (Control that holds the grade texts), %Dim.
+## The root's size is the play area (circles stay inside it).
+##
 ## Usage (same contract as every Minigame):
-##     var mg := CircleMinigame.new()
+##     var mg := CircleMinigame.create()
 ##     mg.position = Vector2(0, 26); mg.size = Vector2(320, 106)   # play area
 ##     parent.add_child(mg)
 ##     mg.start(my_config)
@@ -28,10 +34,10 @@ class Circle:
 	var pos := Vector2.ZERO
 	var spawn_time := 0.0
 	var alive := true
+	var node: CircleTarget   # the scene node that draws this circle
 
-const POP_TIME := 0.5
-const RING_START_SCALE := 3.0
-const FONT_SIZE := 8
+const TARGET_SCENE := preload("res://minigames/circle/CircleTarget.tscn")
+const POPUP_SCENE := preload("res://minigames/circle/GradePopup.tscn")
 
 var config: CircleMinigameConfig = CircleMinigameConfig.new()
 var circles: Array[Circle] = []   # every circle spawned so far, in spawn order
@@ -41,7 +47,14 @@ var elapsed := 0.0
 var _spawned := 0
 var _resolved := 0
 var _rng := RandomNumberGenerator.new()
-var _pops: Array = []             # {pos, grade, age}: little "PERFECT!" labels
+
+@onready var _circle_layer: Control = %Circles
+@onready var _popup_layer: Control = %Popups
+
+
+## Builds the minigame from its scene (minigames/circle/CircleMinigame.tscn).
+static func create() -> CircleMinigame:
+	return (load("res://minigames/circle/CircleMinigame.tscn") as PackedScene).instantiate() as CircleMinigame
 
 
 func start(cfg: Resource = null) -> void:
@@ -53,8 +66,8 @@ func start(cfg: Resource = null) -> void:
 	if size == Vector2.ZERO:
 		size = get_viewport_rect().size if is_inside_tree() else Vector2(320, 180)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_clear_nodes()
 	circles.clear()
-	_pops.clear()
 	grades.clear()
 	grades.resize(config.count())
 	grades.fill(TimingBar.Result.MISS)
@@ -67,7 +80,6 @@ func start(cfg: Resource = null) -> void:
 		_rng.randomize()
 	super.start(cfg)
 	tick(0.0)   # first circle appears immediately
-	queue_redraw()
 
 
 # ------------------------------------------------------------------ simulation
@@ -137,6 +149,9 @@ func _spawn_circle() -> void:
 	# shifting the whole rhythm.
 	c.spawn_time = _spawned * config.interval()
 	c.pos = _pick_position()
+	c.node = TARGET_SCENE.instantiate()
+	_circle_layer.add_child(c.node)
+	c.node.setup(c.index, c.pos, config.radius())
 	circles.append(c)
 	_spawned += 1
 
@@ -165,7 +180,12 @@ func _resolve(c: Circle, grade: int) -> void:
 	c.alive = false
 	grades[c.index] = grade
 	_resolved += 1
-	_pops.append({"pos": c.pos, "grade": grade, "age": 0.0})
+	if c.node != null:
+		c.node.queue_free()
+		c.node = null
+	var pop: GradePopup = POPUP_SCENE.instantiate()
+	_popup_layer.add_child(pop)
+	pop.show_grade(grade, c.pos)
 	circle_resolved.emit(c.index, grade)
 	if _resolved >= config.count():
 		_finish(build_result(grades, config))
@@ -211,53 +231,21 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 
 
-# ------------------------------------------------------------------ drawing
+# ------------------------------------------------------------------ visuals
 
 func _process(delta: float) -> void:
-	if running:
-		tick(delta)
-	for p in _pops:
-		p["age"] += delta
-	_pops = _pops.filter(func(p: Dictionary) -> bool: return p["age"] < POP_TIME)
-	queue_redraw()
-
-
-func _draw() -> void:
-	if not running and _pops.is_empty():
+	if not running:
 		return
-	var font := ThemeDB.fallback_font
-	draw_rect(Rect2(Vector2.ZERO, size), Color(0, 0, 0, 0.35))
-	draw_string(font, Vector2(0, 9), "Klik lingkaran pas ringnya menutup! (Z = terlama)",
-		HORIZONTAL_ALIGNMENT_CENTER, size.x, FONT_SIZE, Color(1, 1, 1, 0.8))
+	tick(delta)
 	var ideal := config.approach_time()
 	var late_after := ideal + config.good_win()
 	for c in circles:
-		if not c.alive:
-			continue
-		var age := age_of(c)
-		var ring_t := clampf(age / ideal, 0.0, 1.0)
-		var ring_r := config.radius() * lerpf(RING_START_SCALE, 1.0, ring_t)
-		var fill := Color(0.95, 0.75, 0.2, 0.85)
-		if age > late_after:
-			fill = Color(0.9, 0.3, 0.25, 0.7)   # too late: it is about to expire
-		draw_circle(c.pos, config.radius(), fill)
-		draw_arc(c.pos, config.radius(), 0.0, TAU, 24, Color.WHITE, 1.0)
-		draw_arc(c.pos, ring_r, 0.0, TAU, 32, Color(1, 1, 1, 0.9), 1.0)
-		draw_string(font, c.pos + Vector2(-8, 3), str(c.index + 1),
-			HORIZONTAL_ALIGNMENT_CENTER, 16, FONT_SIZE, Color.BLACK)
-	for p in _pops:
-		var col := Color.WHITE
-		var text := ""
-		match p["grade"]:
-			TimingBar.Result.PERFECT:
-				col = Color(0.3, 1.0, 0.45)
-				text = "PERFECT"
-			TimingBar.Result.GOOD:
-				col = Color(0.95, 0.85, 0.3)
-				text = "GOOD"
-			_:
-				col = Color(1.0, 0.4, 0.4)
-				text = "MISS"
-		col.a = 1.0 - p["age"] / POP_TIME
-		draw_string(font, p["pos"] + Vector2(-20, -p["age"] * 16.0 - 4), text,
-			HORIZONTAL_ALIGNMENT_CENTER, 40, FONT_SIZE, col)
+		if c.alive and c.node != null:
+			c.node.show_progress(age_of(c), ideal, late_after)
+
+
+func _clear_nodes() -> void:
+	for layer: Control in [_circle_layer, _popup_layer]:
+		for child in layer.get_children():
+			layer.remove_child(child)
+			child.queue_free()

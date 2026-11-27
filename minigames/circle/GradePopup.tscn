@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://minigames/circle/GradePopup.gd" id="1"]
+
+[node name="GradePopup" type="Label"]
+custom_minimum_size = Vector2(40, 12)
+offset_right = 40.0
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 8
+text = "PERFECT"
+horizontal_alignment = 1
+script = ExtResource("1")

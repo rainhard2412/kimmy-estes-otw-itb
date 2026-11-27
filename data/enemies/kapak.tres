@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3]
 
 [ext_resource type="Script" path="res://data/EnemyData.gd" id="1"]
+[ext_resource type="PackedScene" path="res://battle/units/KapakUnit.tscn" id="2"]
 
 [resource]
 script = ExtResource("1")
+unit_scene = ExtResource("2")
 display_name = "Batara Kala Kapak"
 short_name = "Kapak"
 max_hp = 20

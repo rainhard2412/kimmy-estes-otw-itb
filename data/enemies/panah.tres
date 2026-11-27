@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://71rb1j46xgwv"]
 
 [ext_resource type="Script" uid="uid://cjlfhw5dvhem4" path="res://data/EnemyData.gd" id="1"]
+[ext_resource type="PackedScene" path="res://battle/units/PanahUnit.tscn" id="2"]
 
 [resource]
 script = ExtResource("1")
+unit_scene = ExtResource("2")
 display_name = "Batara Kala Panah"
 short_name = "Panah"
 max_hp = 14

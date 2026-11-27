@@ -1,0 +1,92 @@
+[gd_resource type="Theme" format=3 uid="uid://cce5hyog4u6cj"]
+
+[sub_resource type="StyleBoxFlat" id="Node_error"]
+bg_color = Color(0.85, 0.6, 0.1, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.5)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="Node_failed"]
+bg_color = Color(0.8, 0.2, 0.2, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.5)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="Node_ok"]
+bg_color = Color(0.2, 0.55, 0.3, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.5)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="Node_offline"]
+bg_color = Color(0.35, 0.37, 0.42, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.5)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="Bar_bg"]
+bg_color = Color(0.05, 0.06, 0.08, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.35)
+
+[sub_resource type="StyleBoxFlat" id="Bar_fill"]
+bg_color = Color(0.3, 0.8, 0.45, 1)
+
+[resource]
+default_font_size = 8
+BannerLabel/base_type = &"Label"
+BannerLabel/colors/font_outline_color = Color(0, 0, 0, 1)
+BannerLabel/constants/outline_size = 4
+BannerLabel/font_sizes/font_size = 16
+HUDLabel/base_type = &"Label"
+HUDLabel/colors/font_outline_color = Color(0, 0, 0, 1)
+HUDLabel/constants/outline_size = 3
+NodeError/base_type = &"Button"
+NodeError/styles/disabled = SubResource("Node_error")
+NodeError/styles/hover = SubResource("Node_error")
+NodeError/styles/normal = SubResource("Node_error")
+NodeError/styles/pressed = SubResource("Node_error")
+NodeFailed/base_type = &"Button"
+NodeFailed/styles/disabled = SubResource("Node_failed")
+NodeFailed/styles/hover = SubResource("Node_failed")
+NodeFailed/styles/normal = SubResource("Node_failed")
+NodeFailed/styles/pressed = SubResource("Node_failed")
+NodeOK/base_type = &"Button"
+NodeOK/styles/disabled = SubResource("Node_ok")
+NodeOK/styles/hover = SubResource("Node_ok")
+NodeOK/styles/normal = SubResource("Node_ok")
+NodeOK/styles/pressed = SubResource("Node_ok")
+NodeOffline/base_type = &"Button"
+NodeOffline/styles/disabled = SubResource("Node_offline")
+NodeOffline/styles/hover = SubResource("Node_offline")
+NodeOffline/styles/normal = SubResource("Node_offline")
+NodeOffline/styles/pressed = SubResource("Node_offline")
+ProgressBar/styles/background = SubResource("Bar_bg")
+ProgressBar/styles/fill = SubResource("Bar_fill")
