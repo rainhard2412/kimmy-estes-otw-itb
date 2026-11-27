@@ -1,0 +1,842 @@
+[gd_scene format=3 uid="uid://bespgnyhmdrhi"]
+
+[ext_resource type="Script" uid="uid://ch1mbicjb374q" path="res://ui/MainMenuAwal.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bmh6pbm6w0ib6" path="res://asset/AssetMainMenu/Screenshot 2026-11-27 143816.png" id="2_qfpqy"]
+[ext_resource type="Texture2D" uid="uid://bfkgnxs2xf8qs" path="res://asset/AssetMainMenu/INNERSIA.png" id="3_if1ks"]
+[ext_resource type="Texture2D" uid="uid://c35jk6l7whllw" path="res://asset/AssetMainMenu/Setting.png" id="4_jwhgl"]
+[ext_resource type="Texture2D" uid="uid://bnli4gqgh4pwx" path="res://asset/AssetMainMenu/START.png" id="4_xo1cm"]
+[ext_resource type="Texture2D" uid="uid://ba1w8jefwo6ie" path="res://asset/AssetMainMenu/kredit.png" id="5_stetw"]
+[ext_resource type="Texture2D" uid="uid://c2py5vr11usyb" path="res://asset/AssetMainMenu/KEluar1.png" id="6_mlhn5"]
+[ext_resource type="Script" path="res://ui/MenuStarfield.gd" id="7_stars"]
+[ext_resource type="Script" path="res://ui/MenuShip.gd" id="8_ship"]
+
+[sub_resource type="FontFile" id="FontFile_stetw"]
+cache/0/variation_coordinates = {}
+cache/0/face_index = 0
+cache/0/embolden = 0.0
+cache/0/transform = Transform2D(1, 0, 0, 1, 0, 0)
+cache/0/spacing_top = 0
+cache/0/spacing_bottom = 0
+cache/0/spacing_space = 0
+cache/0/spacing_glyph = 0
+cache/0/baseline_offset = 0.0
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/7/0/ascent = 0.0
+cache/0/7/0/descent = 0.0
+cache/0/7/0/underline_position = 0.0
+cache/0/7/0/underline_thickness = 0.0
+cache/0/7/0/scale = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mode_normal"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.03, 0.07, 0.14, 0.72)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.65, 0.9, 0.5)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.06, 0.12, 0.4)
+shadow_size = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mode_pressed"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.3, 0.6, 0.85, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mode_hover"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+bg_color = Color(0.12, 0.35, 0.55, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.75, 0.95, 1, 0.95)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+shadow_color = Color(0, 0.1, 0.2, 0.5)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_normal"]
+bg_color = Color(0.04, 0.06, 0.14, 0.82)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 3
+border_color = Color(0.55, 0.6, 0.9, 0.55)
+skew = Vector2(0.12, 0)
+shadow_color = Color(0, 0, 0, 0.45)
+shadow_size = 4
+shadow_offset = Vector2(0, 2)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_hover"]
+bg_color = Color(0.1, 0.13, 0.3, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 3
+border_color = Color(0.85, 0.9, 1, 1)
+skew = Vector2(0.12, 0)
+shadow_color = Color(0.4, 0.55, 1, 0.35)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card_pressed"]
+bg_color = Color(0.3, 0.4, 0.8, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+skew = Vector2(0.12, 0)
+shadow_color = Color(0.5, 0.65, 1, 0.5)
+shadow_size = 10
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_none"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_focus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.7, 0.92, 1, 0.9)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_normal"]
+content_margin_left = 4.0
+content_margin_top = 1.0
+content_margin_right = 4.0
+content_margin_bottom = 1.0
+bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_pressed"]
+content_margin_left = 4.0
+content_margin_top = 1.0
+content_margin_right = 4.0
+content_margin_bottom = 1.0
+bg_color = Color(0.25, 0.55, 0.9, 0.35)
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 0.9)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_menu_hover"]
+content_margin_left = 4.0
+content_margin_top = 1.0
+content_margin_right = 4.0
+content_margin_bottom = 1.0
+bg_color = Color(0.2, 0.5, 0.8, 0.18)
+border_width_bottom = 1
+border_color = Color(0.55, 0.85, 1, 0.85)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.02, 0.045, 0.09, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.75, 1, 0.55)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0, 0, 0, 0.55)
+shadow_size = 8
+
+[node name="MainMenuAwal" type="Control" unique_id=148622619]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1219975248]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_qfpqy")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BackgroundShade" type="ColorRect" parent="." unique_id=1043578255]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.01, 0.02, 0.05, 0.25)
+
+[node name="Starfield" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("7_stars")
+
+[node name="CharacterArt" type="TextureRect" parent="." unique_id=1741231540]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -180.0
+offset_top = -180.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Judul" type="TextureRect" parent="." unique_id=1904268015]
+layout_mode = 0
+offset_left = 63.0
+offset_top = -3.0
+offset_right = 1983.0
+offset_bottom = 1077.0
+mouse_filter = 2
+scale = Vector2(0.10355253, 0.107313976)
+texture = ExtResource("3_if1ks")
+
+[node name="TopRightMenu" type="VBoxContainer" parent="." unique_id=1512088270]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -58.0
+offset_top = 12.0
+offset_right = 28.0
+offset_bottom = 68.0
+grow_horizontal = 0
+theme_override_constants/separation = 2
+
+[node name="SettingsButton" type="TextureButton" parent="TopRightMenu" unique_id=246150982]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+texture_normal = ExtResource("4_jwhgl")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="CreditsButton" type="TextureButton" parent="TopRightMenu" unique_id=1587220082]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+texture_normal = ExtResource("5_stetw")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="QuitButton" type="TextureButton" parent="TopRightMenu" unique_id=1473269600]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+texture_normal = ExtResource("6_mlhn5")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="StartArea" type="Control" parent="." unique_id=1640321380]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.99999
+offset_top = 3.0
+offset_right = 43.0
+offset_bottom = 41.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.4317465, 1.4317465)
+mouse_filter = 2
+
+[node name="StartButton" type="TextureButton" parent="StartArea" unique_id=676687165]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 5.0
+offset_right = 1927.0
+offset_bottom = 1085.0
+scale = Vector2(0.054111913, 0.054111913)
+texture_normal = ExtResource("4_xo1cm")
+stretch_mode = 0
+
+[node name="Footer" type="Label" parent="." unique_id=61083072]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = -12.0
+offset_right = 220.0
+offset_bottom = -3.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.6)
+theme_override_colors/font_outline_color = Color(0, 0.02, 0.05, 0.8)
+theme_override_constants/outline_size = 1
+theme_override_fonts/font = SubResource("FontFile_stetw")
+theme_override_font_sizes/font_size = 5
+text = "© 2026 by team KimmyEstes"
+
+[node name="Ship" type="Control" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 112.0
+offset_top = 72.0
+offset_right = 208.0
+offset_bottom = 144.0
+mouse_filter = 2
+script = ExtResource("8_ship")
+
+[node name="LaunchUI" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ModeName" type="Label" parent="LaunchUI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 18.0
+offset_right = 120.0
+offset_bottom = 36.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.08, 0.2, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 13
+text = "STORY MODE"
+horizontal_alignment = 1
+
+[node name="Sub" type="Label" parent="LaunchUI"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 36.0
+offset_right = 120.0
+offset_bottom = 46.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 1, 0.8)
+theme_override_font_sizes/font_size = 7
+text = "SIAP LEPAS LANDAS"
+horizontal_alignment = 1
+
+[node name="Prompt" type="Label" parent="LaunchUI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -34.0
+offset_right = 150.0
+offset_bottom = -22.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.08, 0.2, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 9
+text = "KLIK / TEKAN SPASI UNTUK TERBANG"
+horizontal_alignment = 1
+
+[node name="Tip" type="Label" parent="LaunchUI"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -18.0
+offset_right = 150.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.7)
+theme_override_font_sizes/font_size = 6
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="BackHint" type="Label" parent="LaunchUI"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 8.0
+offset_top = 6.0
+offset_right = 120.0
+offset_bottom = 14.0
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.55)
+theme_override_font_sizes/font_size = 6
+text = "ESC  KEMBALI"
+
+[node name="ModePanel" type="Control" parent="." unique_id=388383223]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="ModePanel" unique_id=1872823069]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.005, 0.015, 0.035, 0.45)
+
+[node name="PanelTitle" type="Label" parent="ModePanel" unique_id=2109626229]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -160.0
+offset_top = 84.0
+offset_right = 160.0
+offset_bottom = 96.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 1, 0.9)
+theme_override_colors/font_outline_color = Color(0, 0.05, 0.12, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 8
+text = "—  PILIH MODE  —"
+horizontal_alignment = 1
+
+[node name="StoryButton" type="Button" parent="ModePanel" unique_id=276949925]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -118.0
+offset_top = 100.0
+offset_right = -8.0
+offset_bottom = 150.0
+grow_horizontal = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_card_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_card_normal")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_none")
+
+[node name="Name" type="Label" parent="ModePanel/StoryButton"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 9.0
+offset_bottom = 23.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.08, 0.2, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 11
+text = "STORY"
+horizontal_alignment = 1
+
+[node name="Desc" type="Label" parent="ModePanel/StoryButton"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 26.0
+offset_right = -8.0
+offset_bottom = 46.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.72, 0.8, 1, 0.85)
+theme_override_font_sizes/font_size = 5
+text = "Jalani kisah Bara dan kawan-kawan"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="EndlessButton" type="Button" parent="ModePanel" unique_id=393181294]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 8.0
+offset_top = 100.0
+offset_right = 118.0
+offset_bottom = 150.0
+grow_horizontal = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_card_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_card_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_card_pressed")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_card_normal")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_none")
+
+[node name="Name" type="Label" parent="ModePanel/EndlessButton"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 9.0
+offset_bottom = 23.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0.05, 0.08, 0.2, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 11
+text = "ENDLESS"
+horizontal_alignment = 1
+
+[node name="Desc" type="Label" parent="ModePanel/EndlessButton"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 26.0
+offset_right = -8.0
+offset_bottom = 46.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.72, 0.8, 1, 0.85)
+theme_override_font_sizes/font_size = 5
+text = "Bertahan dari gelombang musuh tanpa henti"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="BackButton" type="Button" parent="ModePanel" unique_id=1342558294]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -30.0
+offset_top = 156.0
+offset_right = 30.0
+offset_bottom = 170.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.7, 0.82, 0.95, 0.85)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 7
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_menu_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_menu_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
+text = "KEMBALI"
+
+[node name="SettingsPanel" type="Control" parent="." unique_id=969428215]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="SettingsPanel" unique_id=1518193259]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.005, 0.01, 0.03, 0.78)
+
+[node name="Panel" type="Panel" parent="SettingsPanel" unique_id=1466592095]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -64.0
+offset_right = 110.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Title" type="Label" parent="SettingsPanel/Panel" unique_id=1430262991]
+layout_mode = 0
+offset_top = 10.0
+offset_right = 220.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.05, 0.12, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 11
+text = "PENGATURAN"
+horizontal_alignment = 1
+
+[node name="VolumeLabel" type="Label" parent="SettingsPanel/Panel" unique_id=645751505]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 34.0
+offset_right = 150.0
+offset_bottom = 44.0
+theme_override_colors/font_color = Color(0.72, 0.86, 1, 0.9)
+theme_override_font_sizes/font_size = 8
+text = "VOLUME MASTER"
+
+[node name="VolumeSlider" type="HSlider" parent="SettingsPanel/Panel" unique_id=370235832]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 46.0
+offset_right = 204.0
+offset_bottom = 62.0
+value = 100.0
+
+[node name="FullscreenCheck" type="CheckButton" parent="SettingsPanel/Panel" unique_id=278869171]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 64.0
+offset_right = 208.0
+offset_bottom = 82.0
+theme_override_colors/font_color = Color(0.82, 0.9, 1, 0.95)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 8
+text = "Layar penuh"
+
+[node name="BackButton" type="Button" parent="SettingsPanel/Panel" unique_id=1662508478]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 94.0
+offset_right = 150.0
+offset_bottom = 114.0
+theme_override_colors/font_color = Color(0.85, 0.94, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 9
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_menu_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_menu_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
+text = "KEMBALI"
+
+[node name="CreditsPanel" type="Control" parent="." unique_id=1182890781]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="CreditsPanel" unique_id=1904311530]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.005, 0.01, 0.03, 0.78)
+
+[node name="Panel" type="Panel" parent="CreditsPanel" unique_id=1098886230]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -64.0
+offset_right = 110.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Title" type="Label" parent="CreditsPanel/Panel" unique_id=226554814]
+layout_mode = 0
+offset_top = 10.0
+offset_right = 220.0
+offset_bottom = 26.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0.05, 0.12, 1)
+theme_override_constants/outline_size = 3
+theme_override_font_sizes/font_size = 11
+text = "KREDIT"
+horizontal_alignment = 1
+
+[node name="Body" type="Label" parent="CreditsPanel/Panel" unique_id=1062231704]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 32.0
+offset_right = 206.0
+offset_bottom = 92.0
+theme_override_colors/font_color = Color(0.78, 0.88, 1, 0.9)
+theme_override_font_sizes/font_size = 7
+text = "Sebuah game oleh
+team KimmyEstes
+
+Terima kasih sudah bermain!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButton" type="Button" parent="CreditsPanel/Panel" unique_id=1708462314]
+layout_mode = 0
+offset_left = 70.0
+offset_top = 94.0
+offset_right = 150.0
+offset_bottom = 114.0
+theme_override_colors/font_color = Color(0.85, 0.94, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 9
+theme_override_styles/normal = SubResource("StyleBoxFlat_menu_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_menu_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_menu_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_focus")
+text = "KEMBALI"
+
+[node name="Transition" type="Control" parent="." unique_id=99186660]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Flash" type="ColorRect" parent="Transition" unique_id=1066820572]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 1, 1, 0)
+
+[node name="Fade" type="ColorRect" parent="Transition" unique_id=1183092520]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="Loading" type="Control" parent="Transition" unique_id=963300276]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="LoadingLabel" type="Label" parent="Transition/Loading" unique_id=1196451781]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -46.0
+offset_right = 80.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.9, 0.96, 1, 1)
+theme_override_font_sizes/font_size = 9
+text = "NOW LOADING"
+horizontal_alignment = 1
+
+[node name="LoadingBarBg" type="ColorRect" parent="Transition/Loading" unique_id=49698096]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -26.0
+offset_right = 60.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.6, 0.8, 1, 0.18)
+
+[node name="LoadingBar" type="ColorRect" parent="Transition/Loading" unique_id=652178077]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -60.0
+offset_top = -26.0
+offset_right = -60.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+color = Color(0.45, 0.85, 1, 0.95)
+
+[node name="Tip" type="Label" parent="Transition/Loading" unique_id=226676872]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -18.0
+offset_right = 150.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.7, 0.8, 0.9, 0.7)
+theme_override_font_sizes/font_size = 7
+horizontal_alignment = 1

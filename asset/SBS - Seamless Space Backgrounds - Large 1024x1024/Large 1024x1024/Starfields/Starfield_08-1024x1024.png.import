@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cxib05eikilm7"
-path="res://.godot/imported/skybox-space-nebula.png-b5bcdcd7b83f5ef7f3803f2bb9b4f828.ctex"
+uid="uid://pcol01nnv1bm"
+path="res://.godot/imported/Starfield_08-1024x1024.png-f86a47abfc70a182fabe0aa78fb50f84.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Skyboxes/skybox-space-nebula.png"
-dest_files=["res://.godot/imported/skybox-space-nebula.png-b5bcdcd7b83f5ef7f3803f2bb9b4f828.ctex"]
+source_file="res://asset/SBS - Seamless Space Backgrounds - Large 1024x1024/Large 1024x1024/Starfields/Starfield_08-1024x1024.png"
+dest_files=["res://.godot/imported/Starfield_08-1024x1024.png-f86a47abfc70a182fabe0aa78fb50f84.ctex"]
 
 [params]
 

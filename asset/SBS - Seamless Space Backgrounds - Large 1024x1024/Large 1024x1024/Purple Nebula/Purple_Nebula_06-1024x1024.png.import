@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://co4ikin1qllyn"
-path="res://.godot/imported/skybox-space-dark.png-1ce2b4dccc9bf6cf4a8ffd2df547eb66.ctex"
+uid="uid://76sxiol0uyvx"
+path="res://.godot/imported/Purple_Nebula_06-1024x1024.png-04dbb45aafa9fa71c4b7266f5fc0bfb7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Skyboxes/skybox-space-dark.png"
-dest_files=["res://.godot/imported/skybox-space-dark.png-1ce2b4dccc9bf6cf4a8ffd2df547eb66.ctex"]
+source_file="res://asset/SBS - Seamless Space Backgrounds - Large 1024x1024/Large 1024x1024/Purple Nebula/Purple_Nebula_06-1024x1024.png"
+dest_files=["res://.godot/imported/Purple_Nebula_06-1024x1024.png-04dbb45aafa9fa71c4b7266f5fc0bfb7.ctex"]
 
 [params]
 

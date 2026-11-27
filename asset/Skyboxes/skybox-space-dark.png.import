@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d1cphl3wf77rw"
-path="res://.godot/imported/skybox-space-galaxy.png-d6d5c13120cd1dc33ddfe16c3557937a.ctex"
+uid="uid://co4ikin1qllyn"
+path="res://.godot/imported/skybox-space-dark.png-54ebdff7779deea02a5738126c8bdde5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Skyboxes/skybox-space-galaxy.png"
-dest_files=["res://.godot/imported/skybox-space-galaxy.png-d6d5c13120cd1dc33ddfe16c3557937a.ctex"]
+source_file="res://asset/Skyboxes/skybox-space-dark.png"
+dest_files=["res://.godot/imported/skybox-space-dark.png-54ebdff7779deea02a5738126c8bdde5.ctex"]
 
 [params]
 
