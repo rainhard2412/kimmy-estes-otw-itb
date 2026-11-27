@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="EnemyData" format=3]
+[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://71rb1j46xgwv"]
 
-[ext_resource type="Script" path="res://data/EnemyData.gd" id="1"]
+[ext_resource type="Script" uid="uid://cjlfhw5dvhem4" path="res://data/EnemyData.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
@@ -12,4 +12,3 @@ attack_damage = 9
 color = Color(0.55, 0.3, 0.75, 1)
 score = 150
 telegraphs = true
-windup_text = "menarik busur..."

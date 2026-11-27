@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://dy7o7vmv0hke2"]
+
+[ext_resource type="Script" uid="uid://b4v48bxcxstc4" path="res://management/Management.gd" id="1"]
+[ext_resource type="Resource" path="res://data/management/chapter_demo.tres" id="2"]
+
+[node name="Management" type="Node" unique_id=615868542]
+script = ExtResource("1")
+config = ExtResource("2")

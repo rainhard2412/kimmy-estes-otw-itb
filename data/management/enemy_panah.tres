@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SimEnemyData" format=3 uid="uid://clofcqayuxaon"]
+
+[ext_resource type="Script" uid="uid://cm8ht2gk4jddi" path="res://management/SimEnemyData.gd" id="1"]
+[ext_resource type="Script" uid="uid://set72w756260" path="res://data/WaveData.gd" id="2"]
+[ext_resource type="Script" uid="uid://cjlfhw5dvhem4" path="res://data/EnemyData.gd" id="2_al6n2"]
+[ext_resource type="Resource" path="res://data/enemies/panah.tres" id="4"]
+
+[sub_resource type="Resource" id="w0"]
+script = ExtResource("2")
+enemies = Array[ExtResource("2_al6n2")]([ExtResource("4"), ExtResource("4")])
+
+[resource]
+script = ExtResource("1")
+display_name = "Batara Kala Panah"
+color = Color(0.55, 0.3, 0.75, 1)
+encounter = Array[ExtResource("2")]([SubResource("w0")])
+weight = 2.0
+clear_score = 150

@@ -8,7 +8,7 @@ func _ready() -> void:
 	_rect.color = Color.BLACK
 	_rect.modulate.a = 0.0
 	_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_rect)
 
 func change_scene(path: String) -> void:

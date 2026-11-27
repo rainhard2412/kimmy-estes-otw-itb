@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ManagementConfig" format=3]
+
+[ext_resource type="Script" path="res://management/ManagementConfig.gd" id="1"]
+[ext_resource type="Resource" path="res://data/management/wahana_graph.tres" id="2"]
+[ext_resource type="Script" path="res://management/SimEnemyData.gd" id="3"]
+[ext_resource type="Resource" path="res://data/management/enemy_kapak.tres" id="e0"]
+[ext_resource type="Resource" path="res://data/management/enemy_panah.tres" id="e1"]
+[ext_resource type="Resource" path="res://data/management/enemy_kawanan.tres" id="e2"]
+
+[resource]
+script = ExtResource("1")
+mode = 1
+graph = ExtResource("2")
+enemies = Array[ExtResource("3")]([ExtResource("e0"), ExtResource("e1"), ExtResource("e2")])
+story_mode = false
+spawn_interval = 8.0
+initial_spawn_delay = 2.0
+spawn_rate_ramp = 0.3
+min_spawn_interval = 3.0
+max_alive = 3
+max_group_size = 2

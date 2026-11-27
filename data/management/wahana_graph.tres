@@ -1,0 +1,100 @@
+[gd_resource type="Resource" script_class="NodeGraphData" format=3 uid="uid://bl5l0r47wljo2"]
+
+[ext_resource type="Script" uid="uid://d3bych547sda" path="res://management/NodeGraphData.gd" id="1"]
+[ext_resource type="Script" uid="uid://cskngrhkgxc0t" path="res://management/SystemNodeData.gd" id="2"]
+[ext_resource type="Script" uid="uid://b1uq3t2qjx45l" path="res://management/NodeEdge.gd" id="3"]
+
+[sub_resource type="Resource" id="e_0"]
+script = ExtResource("3")
+from_id = "oksigen"
+to_id = "daya"
+
+[sub_resource type="Resource" id="e_1"]
+script = ExtResource("3")
+from_id = "jaringan"
+to_id = "daya"
+
+[sub_resource type="Resource" id="e_2"]
+script = ExtResource("3")
+from_id = "sensor"
+to_id = "daya"
+
+[sub_resource type="Resource" id="e_3"]
+script = ExtResource("3")
+from_id = "lengan"
+to_id = "jaringan"
+
+[sub_resource type="Resource" id="e_4"]
+script = ExtResource("3")
+from_id = "kaki"
+to_id = "jaringan"
+
+[sub_resource type="Resource" id="e_5"]
+script = ExtResource("3")
+from_id = "lengan"
+type = 1
+to_id = "kaki"
+spread_bonus = 0.04
+
+[sub_resource type="Resource" id="e_6"]
+script = ExtResource("3")
+from_id = "kaki"
+type = 1
+to_id = "lengan"
+spread_bonus = 0.04
+
+[sub_resource type="Resource" id="n_daya"]
+script = ExtResource("2")
+id = "daya"
+display_name = "Reaktor Daya"
+map_position = Vector2(160, 24)
+error_chance_per_sec = 0.012
+error_countdown = 30.0
+drain_per_sec = 3.0
+
+[sub_resource type="Resource" id="n_oksigen"]
+script = ExtResource("2")
+id = "oksigen"
+display_name = "Intake Oksigen"
+map_position = Vector2(48, 84)
+error_chance_per_sec = 0.015
+error_countdown = 28.0
+drain_per_sec = 2.5
+
+[sub_resource type="Resource" id="n_jaringan"]
+script = ExtResource("2")
+id = "jaringan"
+display_name = "Jaringan Kabel"
+map_position = Vector2(160, 84)
+error_chance_per_sec = 0.015
+error_countdown = 28.0
+
+[sub_resource type="Resource" id="n_sensor"]
+script = ExtResource("2")
+id = "sensor"
+display_name = "Sensor"
+map_position = Vector2(272, 84)
+error_chance_per_sec = 0.012
+error_countdown = 30.0
+drain_per_sec = 1.5
+
+[sub_resource type="Resource" id="n_lengan"]
+script = ExtResource("2")
+id = "lengan"
+display_name = "Lengan"
+map_position = Vector2(108, 150)
+error_chance_per_sec = 0.015
+error_countdown = 26.0
+
+[sub_resource type="Resource" id="n_kaki"]
+script = ExtResource("2")
+id = "kaki"
+display_name = "Kaki"
+map_position = Vector2(212, 150)
+error_chance_per_sec = 0.015
+error_countdown = 26.0
+
+[resource]
+script = ExtResource("1")
+nodes = Array[ExtResource("2")]([SubResource("n_daya"), SubResource("n_oksigen"), SubResource("n_jaringan"), SubResource("n_sensor"), SubResource("n_lengan"), SubResource("n_kaki")])
+edges = Array[ExtResource("3")]([SubResource("e_0"), SubResource("e_1"), SubResource("e_2"), SubResource("e_3"), SubResource("e_4"), SubResource("e_5"), SubResource("e_6")])

@@ -23,6 +23,7 @@ signal battle_finished(result: Dictionary)
 	preload("res://data/skills/pukulan_dasar.tres"),
 	preload("res://data/skills/tendangan_bara.tres"),
 	preload("res://data/skills/perisai_kalpataru.tres"),
+	preload("res://data/skills/hantaman_kalpataru.tres"),
 ]
 ## Used only when `waves` is left empty (e.g. running this scene with F6).
 @export var preset := Preset.CH1_FINAL
@@ -32,6 +33,11 @@ signal battle_finished(result: Dictionary)
 ## Debug/test: if >= 0, Perfect Block checks resolve instantly with this
 ## TimingBar.Result instead of showing the bar.
 @export var auto_block := -1
+## Debug/test: if >= 0, skip the circle minigame and pretend exactly this many
+## circles were missed (the rest PERFECT).
+@export var auto_circle_misses := -1
+## Most extra cooldown turns penalties can add to one skill use.
+@export var max_extra_cooldown := 3
 
 var waves: Array[WaveData] = []
 
@@ -43,6 +49,9 @@ var defending := false
 var actions_left := 0
 var bonus_actions := 0
 var cannon_fired := false
+
+## The circle minigame while one is playing (null otherwise). Tests drive it.
+var active_minigame: CircleMinigame = null
 
 var _enemies: Array[EnemyUnit] = []
 var _target := 0
@@ -73,6 +82,9 @@ func _ready() -> void:
 	if waves.is_empty():
 		waves = Waves.ch1_dream() if preset == Preset.CH1_DREAM else Waves.ch1_final()
 	player_hp = player_max_hp
+	for sk in skills:
+		for w in sk.get_warnings():
+			push_warning("Skill '%s': %s" % [sk.display_name, w])
 	cooldowns.resize(skills.size())
 	cooldowns.fill(0)
 	_build_ui()
@@ -130,8 +142,11 @@ func _build_ui() -> void:
 
 	for i in skills.size():
 		var b := Button.new()
-		b.position = Vector2(8 + i * 104, 136)
-		b.size = Vector2(100, 36)
+		var bw := (304.0 - 4.0 * (skills.size() - 1)) / skills.size()
+		b.position = Vector2(8 + i * (bw + 4.0), 136)
+		b.size = Vector2(bw, 36)
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		b.clip_text = true
 		b.focus_mode = Control.FOCUS_NONE   # arrows pick targets, not buttons
 		_small(b)
 		b.pressed.connect(use_skill.bind(i))
@@ -159,6 +174,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		use_skill(1)
 	elif event.is_action_pressed("skill_3"):
 		use_skill(2)
+	elif event.is_action_pressed("skill_4"):
+		use_skill(3)
 	elif event.is_action_pressed("move_left"):
 		_cycle_target(-1)
 	elif event.is_action_pressed("move_right"):
@@ -240,22 +257,19 @@ func use_skill(i: int) -> void:
 	state = State.BUSY
 	_refresh()
 	var s := skills[i]
-	cooldowns[i] = s.cooldown
 	_used_this_turn.append(i)
 
-	var parts: PackedStringArray = []
-	if s.damage > 0 and not _enemies.is_empty():
-		var t := _enemies[_target]
-		t.take_damage(s.damage)
-		parts.append("%d damage ke %s" % [s.damage, t.data.label()])
-	if s.heal > 0:
-		var healed := mini(s.heal, player_max_hp - player_hp)
-		player_hp += healed
-		parts.append("+%d HP" % healed)
-	if s.defends:
-		defending = true
-		parts.append("bertahan")
-	_log_text("Bara: %s! %s" % [s.display_name, ", ".join(parts)])
+	# 1. Optional circle minigame (skills without circle_config skip this).
+	var mg_result: Dictionary = {}
+	if s.uses_minigame():
+		_hint.text = ""
+		mg_result = await _play_circle_minigame(s)
+
+	# 2. Resolve: penalties first (they may weaken or fizzle), then the skill's
+	#    own numbers, then its custom extra effects.
+	var ctx := _resolve_skill(s, mg_result)
+	cooldowns[i] = s.cooldown + ctx.extra_cooldown
+	_log_text("Bara: %s! %s" % [s.display_name, ", ".join(ctx.log_parts)])
 	_refresh()
 	await _wait(0.5)
 	await _remove_dead()
@@ -270,6 +284,65 @@ func use_skill(i: int) -> void:
 		return
 	_tick_cooldowns()
 	_enemy_turn()
+
+
+## Applies a skill to the battle and returns the context (log text, extra
+## cooldown, ...). Order matters: the minigame multiplier and penalty effects
+## run first so Weaken/Fizzle affect the skill's own damage and healing.
+func _resolve_skill(s: SkillData, mg_result: Dictionary) -> SkillContext:
+	var ctx := SkillContext.new()
+	ctx.battle = self
+	ctx.skill = s
+	ctx.target = _enemies[_target] if not _enemies.is_empty() else null
+	ctx.minigame_result = mg_result
+	ctx.penalty_points = int(mg_result.get("penalty_points", 0))
+	ctx.max_extra_cooldown = max_extra_cooldown
+
+	if not mg_result.is_empty():
+		ctx.scale_output(float(mg_result.get("multiplier", 1.0)))
+		ctx.say("%d meleset" % ctx.penalty_points if ctx.penalty_points > 0 else "sempurna!")
+	for t in s.crossed_thresholds(ctx.penalty_points):
+		t.effect.apply(ctx)
+
+	var out := ctx.output_multiplier
+	if s.damage > 0 and out > 0.0:
+		ctx.deal_damage(maxi(roundi(s.damage * out), 1))
+	if s.heal > 0 and out > 0.0:
+		ctx.heal_player(maxi(roundi(s.heal * out), 1))
+	if s.defends:
+		ctx.set_defending()
+	if not ctx.fizzled:
+		for e in s.extra_effects:
+			if e != null:
+				e.apply(ctx)
+	return ctx
+
+
+## Mounts the circle minigame over the field and waits for it to finish.
+## `auto_circle_misses >= 0` skips it and fakes a result (for tests/demos).
+func _play_circle_minigame(s: SkillData) -> Dictionary:
+	var cfg := s.circle_config
+	if auto_circle_misses >= 0:
+		var g: Array[int] = []
+		for k in cfg.count():
+			g.append(TimingBar.Result.MISS if k < auto_circle_misses else TimingBar.Result.PERFECT)
+		return CircleMinigame.build_result(g, cfg)
+	var mg := CircleMinigame.new()
+	mg.position = Vector2(0, 28)
+	mg.size = Vector2(320, 104)
+	_hud.add_child(mg)
+	active_minigame = mg
+	mg.start(cfg)
+	var result: Dictionary = await mg.finished
+	active_minigame = null
+	await _wait(0.4)   # let the last PERFECT/MISS label show
+	mg.queue_free()
+	return result
+
+
+## Living enemies, for SkillEffects (a copy, safe to loop over).
+func enemies() -> Array[EnemyUnit]:
+	return _enemies.duplicate()
 
 
 ## A skill used this turn stays at its full cooldown; everything else ticks.
@@ -399,7 +472,8 @@ func _refresh() -> void:
 	var my_turn := state == State.PLAYER_TURN
 	for i in _buttons.size():
 		var cd := cooldowns[i]
-		_buttons[i].text = "%d %s%s" % [i + 1, skills[i].display_name, "\n(CD %d)" % cd if cd > 0 else ""]
+		_buttons[i].text = "%d %s%s%s" % [i + 1, skills[i].display_name,
+			" (o)" if skills[i].uses_minigame() else "", "\n(CD %d)" % cd if cd > 0 else ""]
 		_buttons[i].disabled = not my_turn or cd > 0
 	_cursor.visible = my_turn and not _enemies.is_empty()
 	if _cursor.visible:
@@ -446,7 +520,7 @@ func _flash(c: CanvasItem) -> void:
 func _flash_screen() -> void:
 	var r := ColorRect.new()
 	r.color = Color(1, 0.9, 0.6, 0.8)
-	r.set_anchors_preset(Control.PRESET_FULL_RECT)
+	r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	r.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hud.add_child(r)
 	var t := create_tween()

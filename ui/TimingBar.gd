@@ -14,7 +14,7 @@ enum Result { MISS, GOOD, PERFECT }
 @export var action := "defend"
 @export var caption := "pencet X pas hijau!"
 ## Seconds for the marker to cross the whole bar once.
-@export var pass_time := 1.1
+@export var pass_time := 0.5
 ## Zone centers / widths are fractions of the bar (0..1).
 @export var zone_center := 0.75
 @export var perfect_width := 0.14

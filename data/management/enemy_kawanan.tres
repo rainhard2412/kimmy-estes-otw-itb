@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="SimEnemyData" format=3 uid="uid://bfhwumg4fgsut"]
+
+[ext_resource type="Script" uid="uid://cm8ht2gk4jddi" path="res://management/SimEnemyData.gd" id="1"]
+[ext_resource type="Script" uid="uid://set72w756260" path="res://data/WaveData.gd" id="2"]
+[ext_resource type="Script" uid="uid://cjlfhw5dvhem4" path="res://data/EnemyData.gd" id="2_w2osi"]
+[ext_resource type="Resource" path="res://data/enemies/kapak.tres" id="3"]
+[ext_resource type="Resource" path="res://data/enemies/panah.tres" id="4"]
+
+[sub_resource type="Resource" id="w0"]
+script = ExtResource("2")
+enemies = Array[ExtResource("2_w2osi")]([ExtResource("3")])
+intro_text = "GELOMBANG 1"
+
+[sub_resource type="Resource" id="w1"]
+script = ExtResource("2")
+enemies = Array[ExtResource("2_w2osi")]([ExtResource("4"), ExtResource("4")])
+intro_text = "GELOMBANG 2"
+
+[sub_resource type="Resource" id="w2"]
+script = ExtResource("2")
+enemies = Array[ExtResource("2_w2osi")]([ExtResource("3"), ExtResource("3"), ExtResource("4")])
+intro_text = "GELOMBANG 3"
+
+[resource]
+script = ExtResource("1")
+display_name = "Kawanan Batara Kala"
+color = Color(0.9, 0.5, 0.15, 1)
+encounter = Array[ExtResource("2")]([SubResource("w0"), SubResource("w1"), SubResource("w2")])
+clear_score = 400

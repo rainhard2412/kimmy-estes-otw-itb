@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SimEnemyData" format=3 uid="uid://2c1fa47kq8uy"]
+
+[ext_resource type="Script" uid="uid://cm8ht2gk4jddi" path="res://management/SimEnemyData.gd" id="1"]
+[ext_resource type="Script" uid="uid://set72w756260" path="res://data/WaveData.gd" id="2"]
+[ext_resource type="Script" uid="uid://cjlfhw5dvhem4" path="res://data/EnemyData.gd" id="2_6no4u"]
+[ext_resource type="Resource" path="res://data/enemies/kapak.tres" id="3"]
+
+[sub_resource type="Resource" id="w0"]
+script = ExtResource("2")
+enemies = Array[ExtResource("2_6no4u")]([ExtResource("3")])
+
+[resource]
+script = ExtResource("1")
+display_name = "Batara Kala Kapak"
+encounter = Array[ExtResource("2")]([SubResource("w0")])
+weight = 3.0

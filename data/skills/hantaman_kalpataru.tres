@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="SkillData" format=3 uid="uid://poc0p4bhccfp"]
+
+[ext_resource type="Script" uid="uid://bivid6lbo07wb" path="res://data/SkillData.gd" id="1"]
+[ext_resource type="Resource" path="res://data/skills/circle_demo_config.tres" id="2"]
+[ext_resource type="Script" uid="uid://p6q0ym1x4yto" path="res://data/SkillEffect.gd" id="2_td05r"]
+[ext_resource type="Script" uid="uid://dwc32t4lwphv3" path="res://data/PenaltyThreshold.gd" id="3"]
+[ext_resource type="Script" uid="uid://hqippipctm84" path="res://data/effects/WeakenEffect.gd" id="4"]
+[ext_resource type="Script" uid="uid://s8u58vwheymg" path="res://data/effects/BacklashEffect.gd" id="5"]
+
+[sub_resource type="Resource" id="Resource_weaken"]
+script = ExtResource("4")
+percent = 40
+
+[sub_resource type="Resource" id="Resource_t2"]
+script = ExtResource("3")
+effect = SubResource("Resource_weaken")
+
+[sub_resource type="Resource" id="Resource_backlash"]
+script = ExtResource("5")
+damage = 4
+
+[sub_resource type="Resource" id="Resource_t4"]
+script = ExtResource("3")
+at_penalty_points = 4
+effect = SubResource("Resource_backlash")
+
+[resource]
+script = ExtResource("1")
+display_name = "Hantaman Kalpataru"
+damage = 20
+cooldown = 3
+circle_config = ExtResource("2")
+penalty_thresholds = Array[ExtResource("3")]([SubResource("Resource_t2"), SubResource("Resource_t4")])
