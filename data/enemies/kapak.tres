@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EnemyData" format=3]
+
+[ext_resource type="Script" path="res://data/EnemyData.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+display_name = "Batara Kala Kapak"
+short_name = "Kapak"
+max_hp = 20
+attack_name = "Tebas Kapak"
+attack_damage = 6
+color = Color(0.8, 0.2, 0.2, 1)
+score = 100
+telegraphs = false
