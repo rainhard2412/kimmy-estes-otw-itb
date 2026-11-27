@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bucsmj1ua8hk8"
-path="res://.godot/imported/skybox-space-band.png-ffa41d8fa46bdd9041e16879caaa0ab0.ctex"
+uid="uid://cxib05eikilm7"
+path="res://.godot/imported/skybox-space-nebula.png-a6814866b58783f5c29a832ab765dd25.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Skyboxes/skybox-space-band.png"
-dest_files=["res://.godot/imported/skybox-space-band.png-ffa41d8fa46bdd9041e16879caaa0ab0.ctex"]
+source_file="res://asset/Skyboxes/skybox-space-nebula.png"
+dest_files=["res://.godot/imported/skybox-space-nebula.png-a6814866b58783f5c29a832ab765dd25.ctex"]
 
 [params]
 

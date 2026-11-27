@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://bespgnyhmdrhi"]
+
+[ext_resource type="Texture2D" uid="uid://d1cphl3wf77rw" path="res://asset/Skyboxes/skybox-space-galaxy.png" id="1_b8su3"]
+
+[node name="Control" type="Control" unique_id=1025120676]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="bacground" type="TextureRect" parent="." unique_id=1418906947]
+layout_mode = 0
+offset_right = 1149.0
+offset_bottom = 644.0
+texture = ExtResource("1_b8su3")
+expand_mode = 1
