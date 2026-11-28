@@ -229,11 +229,12 @@ func use_skill(i: int) -> void:
 
 	# 2. Resolve: penalties first (they may weaken or fizzle), then the skill's
 	#    own numbers, then its custom extra effects.
+	var pose_time := _play_skill_pose(s)   # before the numbers land, so the enemy's hurt pose follows it
 	var ctx := _resolve_skill(s, mg_result)
 	cooldowns[i] = s.cooldown + ctx.extra_cooldown
 	_log_text("Bara: %s! %s" % [s.display_name, ", ".join(ctx.log_parts)])
 	_refresh()
-	await _wait(0.5)
+	await _wait(maxf(0.5, pose_time))   # never cut a long animation short
 	await _remove_dead()
 
 	if _enemies.is_empty():
@@ -246,6 +247,19 @@ func use_skill(i: int) -> void:
 		return
 	_tick_cooldowns()
 	_enemy_turn()
+
+
+## Bara's pose for a skill: the skill's own `pose`, else defend / heal / attack.
+func _play_skill_pose(s: SkillData) -> float:
+	var pose := s.pose
+	if pose == &"":
+		if s.defends:
+			pose = BattleUnit.DEFEND
+		elif s.heal > 0 and s.damage <= 0:
+			pose = BattleUnit.HEAL
+		else:
+			pose = BattleUnit.ATTACK
+	return _player.play_pose(pose)
 
 
 ## Applies a skill to the battle and returns the context (log text, extra
@@ -360,6 +374,16 @@ func _enemy_turn() -> void:
 		if defending and dmg > 0:
 			dmg = ceili(dmg / 2.0)
 
+		# Poses: a perfect block stuns the attacker; otherwise it attacks and Bara
+		# blocks (partial block / defend skill) or is hurt.
+		var pose_time := 0.0
+		if result == TimingBar.Result.PERFECT:
+			pose_time = maxf(e.play_pose(BattleUnit.STUNNED), _player.play_pose(BattleUnit.BLOCK))
+		else:
+			pose_time = e.play_pose(BattleUnit.ATTACK)
+			pose_time = maxf(pose_time, _player.play_pose(
+					BattleUnit.BLOCK if (result == TimingBar.Result.GOOD or defending) else BattleUnit.HURT))
+
 		if dmg > 0:
 			player_hp = maxi(player_hp - dmg, 0)
 			_log_text("%s: %s! %d damage%s" % [
@@ -368,7 +392,7 @@ func _enemy_turn() -> void:
 			_shake(3.0)
 			_player.flash()
 		_refresh()
-		await _wait(0.6)
+		await _wait(maxf(0.6, pose_time))
 
 		if player_hp <= 0:
 			if GameState.story_mode:

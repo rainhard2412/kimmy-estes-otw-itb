@@ -6,6 +6,10 @@ extends Resource
 @export var heal := 0
 @export var cooldown := 0      # turns locked after use
 @export var defends := false   # halves the next incoming hit
+## The pose Bara plays when using this skill (a name from his AnimationPlayer /
+## AnimatedSprite2D, see battle/BattleUnit.gd). Empty = automatic: `defend` for
+## defend skills, `heal` for heal-only skills, otherwise `attack`.
+@export var pose: StringName = &""
 
 @export_group("Circle minigame")
 ## If set, using this skill first plays the circle minigame. Leave empty for a
