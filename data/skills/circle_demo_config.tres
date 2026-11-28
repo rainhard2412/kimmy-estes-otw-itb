@@ -7,4 +7,4 @@ script = ExtResource("1")
 circle_lifetime = 0.6
 spawn_interval = 0.55
 circle_radius = 16.0
-approach_ring_time = 0.39999999999999997
+approach_ring_time = 0.4
