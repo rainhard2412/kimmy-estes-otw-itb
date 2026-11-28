@@ -27,6 +27,7 @@ effect = SubResource("Resource_backlash")
 [resource]
 script = ExtResource("1")
 display_name = "Hantaman Kalpataru"
+pose = &"smash"
 damage = 20
 cooldown = 3
 circle_config = ExtResource("2")

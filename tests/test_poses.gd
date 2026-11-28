@@ -33,9 +33,19 @@ func _ready() -> void:
 func wait_s(sec: float) -> void:
 	await get_tree().create_timer(sec).timeout
 
+## A PlayerUnit with Bara's own art removed, so the built-in behavior is tested
+## no matter what animations PlayerUnit.tscn has.
+func bare_player() -> PlayerUnit:
+	var u: PlayerUnit = load("res://battle/PlayerUnit.tscn").instantiate()
+	var own := u.get_node_or_null("Anim")
+	if own != null:
+		u.remove_child(own)
+		own.free()
+	return u
+
 ## A PlayerUnit with an AnimationPlayer that has idle (loop) + attack (0.2s).
 func unit_with_art() -> PlayerUnit:
-	var u: PlayerUnit = load("res://battle/PlayerUnit.tscn").instantiate()
+	var u := bare_player()
 	var ap := AnimationPlayer.new()
 	ap.name = "Anim"
 	u.add_child(ap)
@@ -94,8 +104,18 @@ func test_art_poses() -> void:
 	await get_tree().process_frame
 
 func test_builtin_motion() -> void:
+	print("Bara's sprite art")
+	var real: PlayerUnit = load("res://battle/PlayerUnit.tscn").instantiate()
+	add_child(real)
+	await get_tree().process_frame
+	for p in [&"idle", &"attack", &"kick", &"smash", &"defend", &"block", &"hurt", &"heal"]:
+		check(real.has_art(p), "PlayerUnit.tscn has art for '%s'" % p)
+	check((load("res://data/skills/tendangan_bara.tres") as SkillData).pose == &"kick", "Tendangan Bara uses the kick pose")
+	check((load("res://data/skills/hantaman_kalpataru.tres") as SkillData).pose == &"smash", "Hantaman Kalpataru uses the smash pose")
+	real.queue_free()
+	await get_tree().process_frame
 	print("Built-in motion when there is no art")
-	var u: PlayerUnit = load("res://battle/PlayerUnit.tscn").instantiate()
+	var u := bare_player()
 	add_child(u)
 	await get_tree().process_frame
 	check(not u.has_art(&"attack"), "a plain unit has no art poses")
@@ -127,9 +147,14 @@ func test_enemy_poses() -> void:
 	add_child(e)
 	await get_tree().process_frame
 	check(e is BattleUnit, "EnemyUnit is a BattleUnit")
-	e.play_pose(&"attack")
+	var plain: EnemyUnit = (load("res://battle/EnemyUnit.tscn").instantiate() as EnemyUnit).setup(EnemyData.new())
+	add_child(plain)
+	await get_tree().process_frame
+	plain.play_pose(&"attack")
 	await wait_s(0.1)
-	check(e.get_node("%Visual").position.x < 0.0, "an enemy's attack lunges to the LEFT, toward Bara")
+	check(plain.get_node("%Visual").position.x < 0.0, "an enemy's built-in attack lunges to the LEFT, toward Bara")
+	plain.queue_free()
+	await wait_s(0.4)
 	await wait_s(0.4)
 	e.take_damage(1)
 	check(e.current_pose == &"hurt", "taking damage plays hurt")
@@ -167,7 +192,11 @@ func test_battle_wiring() -> void:
 	while b.state != b.State.PLAYER_TURN:
 		await get_tree().process_frame
 	b.use_skill(0)   # Pukulan: damage skill
-	await get_tree().process_frame
+	# Bara dashes to the enemy first, so the pose starts a moment later.
+	for k in 60:
+		if not log.is_empty():
+			break
+		await get_tree().process_frame
 	check(log.size() > 0 and log[0] == &"attack", "a damage skill plays Bara's attack pose")
 	while b.state != b.State.PLAYER_TURN:
 		await get_tree().process_frame

@@ -95,6 +95,7 @@ func _ready() -> void:
 	cooldowns.fill(0)
 	_setup_ui()
 	_refresh()
+	_warm_up_fx()
 	_next_wave()
 
 
@@ -229,12 +230,32 @@ func use_skill(i: int) -> void:
 
 	# 2. Resolve: penalties first (they may weaken or fizzle), then the skill's
 	#    own numbers, then its custom extra effects.
-	var pose_time := _play_skill_pose(s)   # before the numbers land, so the enemy's hurt pose follows it
+	#    Melee skills: Bara runs up to the target first and the numbers land at
+	#    the moment of impact, together with the hit effect.
+	var pose := _skill_pose(s)
+	var target: EnemyUnit = _enemies[_target] if not _enemies.is_empty() else null
+	var melee := s.damage > 0 and not s.defends and target != null and PlayerUnit.MELEE.has(pose)
+	var pose_time := 0.0
+	if melee:
+		cooldowns[i] = s.cooldown   # locked while Bara dashes; penalties may add more below
+		pose_time = await _player.strike_in(target.hit_point(), pose, pace)
+	else:
+		pose_time = _player.play_pose(pose)   # before the numbers land, so the enemy's hurt pose follows it
+	var hp_before := _enemy_hp()
+	var player_hp_before := player_hp
 	var ctx := _resolve_skill(s, mg_result)
+	_skill_fx(pose, ctx, target, hp_before, player_hp - player_hp_before)
 	cooldowns[i] = s.cooldown + ctx.extra_cooldown
 	_log_text("Bara: %s! %s" % [s.display_name, ", ".join(ctx.log_parts)])
 	_refresh()
-	await _wait(maxf(0.5, pose_time))   # never cut a long animation short
+	if melee:
+		# Hold the follow-through for a moment, then dash home.
+		var hold := minf(pose_time, 0.25)
+		await _wait(0.12 + hold)
+		await _player.strike_out(pace)
+		await _wait(0.1)
+	else:
+		await _wait(maxf(0.5, pose_time))   # never cut a long animation short
 	await _remove_dead()
 
 	if _enemies.is_empty():
@@ -250,16 +271,113 @@ func use_skill(i: int) -> void:
 
 
 ## Bara's pose for a skill: the skill's own `pose`, else defend / heal / attack.
-func _play_skill_pose(s: SkillData) -> float:
-	var pose := s.pose
-	if pose == &"":
-		if s.defends:
-			pose = BattleUnit.DEFEND
-		elif s.heal > 0 and s.damage <= 0:
-			pose = BattleUnit.HEAL
-		else:
-			pose = BattleUnit.ATTACK
-	return _player.play_pose(pose)
+func _skill_pose(s: SkillData) -> StringName:
+	if s.pose != &"":
+		return s.pose
+	if s.defends:
+		return BattleUnit.DEFEND
+	if s.heal > 0 and s.damage <= 0:
+		return BattleUnit.HEAL
+	return BattleUnit.ATTACK
+
+
+# ------------------------------------------------------------------ effects
+
+## Which hit effect each melee pose makes.
+const POSE_FX := {
+	&"attack": BattleFx.Kind.PUNCH,
+	&"kick": BattleFx.Kind.KICK,
+	&"smash": BattleFx.Kind.SMASH,
+}
+const COLOR_DAMAGE := Color(1.0, 0.85, 0.3)
+const COLOR_DAMAGE_BIG := Color(1.0, 0.45, 0.15)
+const COLOR_HEAL := Color(0.5, 1.0, 0.55)
+const COLOR_BLOCK := Color(0.55, 0.9, 1.0)
+const COLOR_HURT := Color(1.0, 0.35, 0.3)
+
+
+## Total HP of every living enemy (to see how much a skill dealt).
+func _enemy_hp() -> Dictionary:
+	var d := {}
+	for e in _enemies:
+		if is_instance_valid(e):
+			d[e] = e.hp
+	return d
+
+
+## Effects for one skill use, right when its numbers land.
+func _skill_fx(pose: StringName, ctx: SkillContext, target: EnemyUnit, hp_before: Dictionary, healed: int) -> void:
+	var fx_parent: Node2D = %Field
+	var big := pose == &"smash"
+	for e: EnemyUnit in hp_before:
+		if not is_instance_valid(e):
+			continue
+		var dealt: int = hp_before[e] - e.hp
+		if dealt <= 0:
+			continue
+		var at: Vector2 = e.hit_point() + Vector2(-6, 0)   # the contact side, facing Bara
+		var kind: BattleFx.Kind = POSE_FX.get(pose, BattleFx.Kind.PUNCH)
+		BattleFx.spawn(fx_parent, kind, fx_parent.to_local(at), pace)
+		BattleFx.number(fx_parent, fx_parent.to_local(at + Vector2(6, 2)), str(dealt),
+			COLOR_DAMAGE_BIG if big else COLOR_DAMAGE, pace, big)
+		_hitstop(0.09 if big else 0.05)
+	match pose:
+		&"attack": _shake(1.5, 0.12)
+		&"kick": _shake(2.5, 0.16)
+		&"smash":
+			_shake(5.0, 0.3)
+			_flash_screen(0.45)
+	if ctx.fizzled and target != null and is_instance_valid(target):
+		BattleFx.number(fx_parent, fx_parent.to_local(target.hit_point() + Vector2(0, -16)), "GAGAL", COLOR_HURT, pace)
+	var bara_at: Vector2 = fx_parent.to_local(_player.hit_point())
+	if ctx.skill.defends and not ctx.fizzled:
+		BattleFx.spawn(fx_parent, BattleFx.Kind.SHIELD, bara_at, pace)
+	if healed > 0:
+		BattleFx.spawn(fx_parent, BattleFx.Kind.HEAL, bara_at, pace)
+		BattleFx.number(fx_parent, bara_at + Vector2(26, -4), "+%d" % healed, COLOR_HEAL, pace)
+
+
+## Effects when an enemy's attack reaches Bara.
+func _enemy_hit_fx(result: int, dmg: int) -> void:
+	var fx_parent: Node2D = %Field
+	var at: Vector2 = fx_parent.to_local(_player.hit_point())
+	var blocked := result == TimingBar.Result.GOOD or result == TimingBar.Result.PERFECT or defending
+	if blocked:
+		BattleFx.spawn(fx_parent, BattleFx.Kind.BLOCK, at + Vector2(10, 0), pace)
+	else:
+		BattleFx.spawn(fx_parent, BattleFx.Kind.HURT, at, pace)
+	if result == TimingBar.Result.PERFECT:
+		BattleFx.number(fx_parent, at + Vector2(26, -18), "PERFECT!", COLOR_BLOCK, pace, true)
+	elif dmg > 0:
+		BattleFx.number(fx_parent, at + Vector2(26, -18), "-%d" % dmg, COLOR_BLOCK if blocked else COLOR_HURT, pace)
+
+
+## Draws every effect once, invisibly, while the wave banner shows. The first
+## draw of particles/afterimages compiles shaders and can freeze one frame;
+## doing it here keeps that hitch out of Bara's first dash.
+func _warm_up_fx() -> void:
+	var fx_parent: Node2D = %Field
+	var holder := Node2D.new()
+	holder.modulate.a = 0.01
+	fx_parent.add_child(holder)
+	for k in BattleFx.Kind.values():
+		BattleFx.spawn(holder, k, Vector2(-100, -100), 0.2)
+	BattleFx.number(holder, Vector2(-100, -100), "0", COLOR_DAMAGE, 0.2)
+	BattleFx.afterimage(holder, _player.get_node_or_null("Visual/Sprite2D") as Sprite2D, 0.2)
+	get_tree().create_timer(0.6).timeout.connect(holder.queue_free)
+
+
+## A tiny freeze on impact so hits feel heavy.
+func _hitstop(seconds: float) -> void:
+	if pace < 0.5:
+		return   # tests / fast runs
+	Engine.time_scale = 0.05
+	await get_tree().create_timer(seconds, true, false, true).timeout
+	Engine.time_scale = 1.0
+
+
+func _exit_tree() -> void:
+	Engine.time_scale = 1.0
 
 
 ## Applies a skill to the battle and returns the context (log text, extra
@@ -383,6 +501,8 @@ func _enemy_turn() -> void:
 			pose_time = e.play_pose(BattleUnit.ATTACK)
 			pose_time = maxf(pose_time, _player.play_pose(
 					BattleUnit.BLOCK if (result == TimingBar.Result.GOOD or defending) else BattleUnit.HURT))
+		# Effect a beat after the attack starts, when the enemy's swing lands.
+		get_tree().create_timer(0.15 * pace).timeout.connect(_enemy_hit_fx.bind(result, dmg))
 
 		if dmg > 0:
 			player_hp = maxi(player_hp - dmg, 0)
@@ -497,6 +617,6 @@ func _shake(strength: float, duration := 0.2) -> void:
 	t.tween_property(_camera, "offset", Vector2.ZERO, 0.04)
 
 
-func _flash_screen() -> void:
-	_flash_rect.modulate.a = 1.0
+func _flash_screen(strength := 1.0) -> void:
+	_flash_rect.modulate.a = strength
 	create_tween().tween_property(_flash_rect, "modulate:a", 0.0, 0.4)

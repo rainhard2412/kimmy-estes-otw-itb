@@ -7,3 +7,4 @@ script = ExtResource("1")
 display_name = "Tendangan Bara"
 damage = 15
 cooldown = 2
+pose = &"kick"

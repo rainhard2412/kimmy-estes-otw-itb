@@ -90,6 +90,12 @@ func center_top() -> Vector2:
 	return position + Vector2(_click.size.x / 2.0, 0.0)
 
 
+## Global point where hits against this enemy land (used by Bara's melee dash
+## and the impact effects): the middle of its click area.
+func hit_point() -> Vector2:
+	return _click.global_position + _click.size / 2.0
+
+
 func _on_click_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		clicked.emit(self)
