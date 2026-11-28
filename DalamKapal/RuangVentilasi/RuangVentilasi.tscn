@@ -1,0 +1,208 @@
+[gd_scene format=4 uid="uid://cdbn376p0sqei"]
+
+[ext_resource type="Script" uid="uid://bvvtf5xc8pedu" path="res://DalamKapal/Shared/SpaceBackground.gd" id="1_space"]
+[ext_resource type="Script" uid="uid://cdiqif1boxxy4" path="res://DalamKapal/Shared/ShipCamera.gd" id="3_camera"]
+[ext_resource type="TileSet" uid="uid://8gr0jhu250ss" path="res://DalamKapal/Shared/ShipTileSet.tres" id="4_tileset"]
+[ext_resource type="Texture2D" uid="uid://beewj70nnsk8k" path="res://asset/FelixArea/Nebula Blue.png" id="5_nebula"]
+[ext_resource type="Texture2D" uid="uid://b1menp6iwomsq" path="res://asset/FelixArea/Stars Small_2.png" id="6_stars_far"]
+[ext_resource type="Texture2D" uid="uid://lskxtdacytwu" path="res://asset/FelixArea/Stars Small_1.png" id="7_stars_mid"]
+[ext_resource type="Texture2D" uid="uid://b0t1rmw4xwltn" path="res://asset/FelixArea/Stars-Big_1_2_PC.png" id="8_stars_near"]
+[ext_resource type="Script" uid="uid://cux1w8f5b1q2" path="res://DalamKapal/Shared/VentFan.gd" id="9_fan_script"]
+[ext_resource type="Texture2D" uid="uid://cl7hqw8qagggw" path="res://asset/FelixArea/Untitled85_20261128174512.png" id="10_fan1"]
+[ext_resource type="Texture2D" uid="uid://cl0kadmbkojrf" path="res://asset/FelixArea/Untitled85_20261128174442.png" id="11_fan2"]
+[ext_resource type="Texture2D" uid="uid://b6ls5yprqnulm" path="res://asset/FelixArea/Untitled85_20261128174318.png" id="12_fan3"]
+[ext_resource type="Texture2D" uid="uid://dnhiya44rhvwy" path="res://asset/FelixArea/Untitled85_20261128174345.png" id="13_fan4"]
+
+[sub_resource type="SpriteFrames" id="Frames_fan"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_fan1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_fan2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_fan3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_fan4")
+}],
+"loop": true,
+"name": &"spin",
+"speed": 12.0
+}]
+
+[sub_resource type="RectangleShape2D" id="Shape_fan_body"]
+size = Vector2(56, 56)
+
+[sub_resource type="RectangleShape2D" id="Shape_fan_interact"]
+size = Vector2(88, 88)
+
+[node name="RuangVentilasi" type="Node2D" unique_id=313740684]
+
+[node name="SpaceBackground" type="Node2D" parent="." unique_id=569537837]
+texture_filter = 4
+script = ExtResource("1_space")
+
+[node name="Nebula" type="Parallax2D" parent="SpaceBackground" unique_id=1813935830]
+scroll_scale = Vector2(0.05, 0.05)
+repeat_size = Vector2(1024, 1024)
+repeat_times = 2
+screen_offset = Vector2(64, -16)
+
+[node name="Sprite" type="Sprite2D" parent="SpaceBackground/Nebula" unique_id=1289216195]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_nebula")
+centered = false
+
+[node name="StarsFar" type="Parallax2D" parent="SpaceBackground" unique_id=1339038292]
+modulate = Color(0.8, 0.85, 1, 0.6)
+scroll_scale = Vector2(0.15, 0.15)
+repeat_size = Vector2(512, 512)
+repeat_times = 2
+screen_offset = Vector2(64, -16)
+
+[node name="Sprite" type="Sprite2D" parent="SpaceBackground/StarsFar" unique_id=1729198981]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("6_stars_far")
+centered = false
+
+[node name="StarsMid" type="Parallax2D" parent="SpaceBackground" unique_id=18197199]
+modulate = Color(0.9, 0.95, 1, 0.8)
+scroll_scale = Vector2(0.35, 0.35)
+repeat_size = Vector2(640, 640)
+repeat_times = 2
+screen_offset = Vector2(64, -16)
+
+[node name="Sprite" type="Sprite2D" parent="SpaceBackground/StarsMid" unique_id=942374087]
+scale = Vector2(0.3125, 0.3125)
+texture = ExtResource("7_stars_mid")
+centered = false
+
+[node name="StarsNear" type="Parallax2D" parent="SpaceBackground" unique_id=2055686275]
+scroll_scale = Vector2(0.65, 0.65)
+repeat_size = Vector2(768, 768)
+repeat_times = 2
+screen_offset = Vector2(64, -16)
+
+[node name="Sprite" type="Sprite2D" parent="SpaceBackground/StarsNear" unique_id=1429718509]
+scale = Vector2(0.375, 0.375)
+texture = ExtResource("8_stars_near")
+centered = false
+
+[node name="Ship" type="Node2D" parent="." unique_id=799650351]
+
+[node name="Floor" type="TileMapLayer" parent="Ship" unique_id=1950010703]
+tile_map_data = PackedByteArray("AAABAAEAAAABAAEAAAACAAEAAAABAAEAAAADAAEAAAABAAEAAAAEAAEAAAABAAEAAAAFAAEAAAABAAEAAAAGAAEAAAABAAEAAAAHAAEAAAABAAEAAAAIAAEAAAABAAEAAAAJAAEAAAABAAEAAAAKAAEAAAABAAEAAAALAAEAAAABAAEAAAAMAAEAAAABAAUAAAABAAIAAAABAAEAAAACAAIAAAABAAUAAAADAAIAAAACAAMAAAAEAAIAAAABAAEAAAAFAAIAAAABAAEAAAAGAAIAAAABAAEAAAAHAAIAAAABAAUAAAAIAAIAAAABAAEAAAAJAAIAAAABAAEAAAAKAAIAAAABAAEAAAALAAIAAAABAAUAAAAMAAIAAAABAAUAAAABAAMAAAABAAEAAAACAAMAAAABAAEAAAADAAMAAAABAAEAAAAEAAMAAAABAAEAAAAFAAMAAAABAAEAAAAGAAMAAAABAAEAAAAHAAMAAAABAAEAAAAIAAMAAAABAAEAAAAJAAMAAAABAAEAAAAKAAMAAAABAAUAAAALAAMAAAABAAEAAAAMAAMAAAABAAEAAAABAAQAAAABAAEAAAACAAQAAAABAAEAAAADAAQAAAABAAUAAAAEAAQAAAAAAAMAAAAFAAQAAAAAAAMAAAAGAAQAAAAAAAMAAAAHAAQAAAAAAAMAAAAIAAQAAAAAAAMAAAAJAAQAAAABAAEAAAAKAAQAAAABAAEAAAALAAQAAAABAAEAAAAMAAQAAAABAAEAAAABAAUAAAABAAEAAAACAAUAAAABAAEAAAADAAUAAAABAAEAAAAEAAUAAAABAAEAAAAFAAUAAAABAAEAAAAGAAUAAAABAAEAAAAHAAUAAAABAAEAAAAIAAUAAAABAAEAAAAJAAUAAAABAAEAAAAKAAUAAAABAAEAAAALAAUAAAABAAEAAAAMAAUAAAABAAEAAAABAAYAAAABAAEAAAACAAYAAAABAAUAAAADAAYAAAABAAEAAAAEAAYAAAABAAEAAAAFAAYAAAABAAEAAAAGAAYAAAABAAEAAAAHAAYAAAABAAEAAAAIAAYAAAABAAEAAAAJAAYAAAABAAEAAAAKAAYAAAABAAEAAAALAAYAAAABAAEAAAAMAAYAAAABAAEAAAABAAcAAAABAAEAAAACAAcAAAABAAEAAAADAAcAAAABAAEAAAAEAAcAAAABAAUAAAAFAAcAAAABAAEAAAAGAAcAAAABAAEAAAAHAAcAAAABAAUAAAAIAAcAAAABAAEAAAAJAAcAAAABAAEAAAAKAAcAAAABAAEAAAALAAcAAAABAAEAAAAMAAcAAAABAAEAAAA=")
+tile_set = ExtResource("4_tileset")
+
+[node name="Hull" type="TileMapLayer" parent="Ship" unique_id=411972023]
+tile_map_data = PackedByteArray("AAABAAAAAAAEAAAAAAABAAgAAAAEAAIAAAACAAAAAAAEAAAAAAACAAgAAAAEAAIAAAADAAAAAAAIAAIAAAADAAgAAAAEAAIAAAAEAAAAAAAEAAAAAAAEAAgAAAAEAAIAAAAFAAAAAAAEAAAAAAAFAAgAAAAEAAIAAAAGAAAAAAAGAAIAAAAGAAgAAAAEAAIAAAAHAAAAAAAEAAAAAAAHAAgAAAAEAAIAAAAIAAAAAAAGAAIAAAAIAAgAAAAEAAIAAAAJAAAAAAAEAAAAAAAJAAgAAAAEAAIAAAAKAAAAAAAEAAAAAAAKAAgAAAAEAAIAAAALAAAAAAAHAAUAAAALAAgAAAAEAAIAAAAMAAAAAAAEAAAAAAAMAAgAAAAEAAIAAAAAAAEAAAADAAEAAAANAAEAAAAFAAEAAAAAAAIAAAADAAEAAAANAAIAAAAFAAEAAAAAAAMAAAADAAEAAAANAAMAAAAFAAEAAAAAAAQAAAADAAEAAAANAAQAAAAFAAEAAAAAAAUAAAADAAEAAAANAAUAAAAFAAEAAAAAAAYAAAADAAEAAAANAAYAAAAFAAEAAAAAAAcAAAADAAEAAAANAAcAAAAFAAEAAAAAAAAAAAADAAAAAAANAAAAAAAFAAAAAAAAAAgAAAADAAIAAAANAAgAAAAFAAIAAAA=")
+tile_set = ExtResource("4_tileset")
+
+[node name="Props" type="TileMapLayer" parent="Ship" unique_id=1970351280]
+y_sort_enabled = true
+tile_map_data = PackedByteArray("AAABAAEAAAAJAAEAAAACAAEAAAAIAAEAAAABAAUAAAADAAMAAAABAAYAAAAEAAMAAAAFAAEAAAAFAAMAAAAGAAEAAAAIAAMAAAAHAAYAAAAJAAMAAAALAAEAAAAEAAcAAAALAAMAAAAAAAcAAAAIAAIAAAACAAcAAAA=")
+tile_set = ExtResource("4_tileset")
+
+[node name="Actors" type="Node2D" parent="." unique_id=51153753]
+y_sort_enabled = true
+
+[node name="VentFan1" type="Node2D" parent="Actors"]
+position = Vector2(320, 160)
+script = ExtResource("9_fan_script")
+
+[node name="Blades" type="AnimatedSprite2D" parent="Actors/VentFan1"]
+texture_filter = 4
+sprite_frames = SubResource("Frames_fan")
+animation = &"spin"
+
+[node name="Body" type="StaticBody2D" parent="Actors/VentFan1"]
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/VentFan1/Body"]
+shape = SubResource("Shape_fan_body")
+
+[node name="InteractArea" type="Area2D" parent="Actors/VentFan1"]
+collision_layer = 0
+collision_mask = 1
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/VentFan1/InteractArea"]
+shape = SubResource("Shape_fan_interact")
+
+[node name="VentFan2" type="Node2D" parent="Actors"]
+position = Vector2(384, 160)
+script = ExtResource("9_fan_script")
+start_frame = 1
+
+[node name="Blades" type="AnimatedSprite2D" parent="Actors/VentFan2"]
+texture_filter = 4
+sprite_frames = SubResource("Frames_fan")
+animation = &"spin"
+
+[node name="Body" type="StaticBody2D" parent="Actors/VentFan2"]
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/VentFan2/Body"]
+shape = SubResource("Shape_fan_body")
+
+[node name="InteractArea" type="Area2D" parent="Actors/VentFan2"]
+collision_layer = 0
+collision_mask = 1
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/VentFan2/InteractArea"]
+shape = SubResource("Shape_fan_interact")
+
+[node name="VentFan3" type="Node2D" parent="Actors"]
+position = Vector2(320, 224)
+script = ExtResource("9_fan_script")
+start_frame = 2
+
+[node name="Blades" type="AnimatedSprite2D" parent="Actors/VentFan3"]
+texture_filter = 4
+sprite_frames = SubResource("Frames_fan")
+animation = &"spin"
+
+[node name="Body" type="StaticBody2D" parent="Actors/VentFan3"]
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/VentFan3/Body"]
+shape = SubResource("Shape_fan_body")
+
+[node name="InteractArea" type="Area2D" parent="Actors/VentFan3"]
+collision_layer = 0
+collision_mask = 1
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/VentFan3/InteractArea"]
+shape = SubResource("Shape_fan_interact")
+
+[node name="VentFan4" type="Node2D" parent="Actors"]
+position = Vector2(384, 224)
+script = ExtResource("9_fan_script")
+start_frame = 3
+
+[node name="Blades" type="AnimatedSprite2D" parent="Actors/VentFan4"]
+texture_filter = 4
+sprite_frames = SubResource("Frames_fan")
+animation = &"spin"
+
+[node name="Body" type="StaticBody2D" parent="Actors/VentFan4"]
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/VentFan4/Body"]
+shape = SubResource("Shape_fan_body")
+
+[node name="InteractArea" type="Area2D" parent="Actors/VentFan4"]
+collision_layer = 0
+collision_mask = 1
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/VentFan4/InteractArea"]
+shape = SubResource("Shape_fan_interact")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=611854149]
+position = Vector2(224, 144)
+limit_left = -40
+limit_top = -40
+limit_right = 488
+limit_bottom = 328
+position_smoothing_enabled = true
+position_smoothing_speed = 6.0
+script = ExtResource("3_camera")
+space_margin = 40.0

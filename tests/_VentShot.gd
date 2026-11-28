@@ -1,5 +1,5 @@
 extends Node
-## Screenshot harness for DalamKapal/RuangVentilasi.tscn.
+## Screenshot harness for DalamKapal/RuangVentilasi/RuangVentilasi.tscn.
 ## Shoots the room from a few camera positions and diffs two frames taken a moment
 ## apart to prove the space background is really scrolling.
 
@@ -8,7 +8,7 @@ const OUT_DIR := "res://tests/_shots"
 
 func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUT_DIR))
-	var scene: Node2D = load("res://DalamKapal/RuangVentilasi.tscn").instantiate()
+	var scene: Node2D = load("res://DalamKapal/RuangVentilasi/RuangVentilasi.tscn").instantiate()
 	add_child(scene)
 
 	var room: Node2D = scene.get_node("Ship")
