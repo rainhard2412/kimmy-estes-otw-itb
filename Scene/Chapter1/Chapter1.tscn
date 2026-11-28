@@ -1,0 +1,109 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://Scene/Chapter1/Chapter1.gd" id="1_main"]
+[ext_resource type="Script" path="res://Scene/Chapter1/RoomPlaceholder.gd" id="2_room"]
+[ext_resource type="Script" path="res://Scene/Chapter1/Chapter1Player.gd" id="3_player"]
+[ext_resource type="Script" path="res://Scene/Chapter1/ActorVisual.gd" id="4_visual"]
+[ext_resource type="Shader" path="res://Scene/Chapter1/EyeOverlay.gdshader" id="5_eyes"]
+[ext_resource type="PackedScene" path="res://ui/DialogueBox.tscn" id="6_dialogue"]
+
+[sub_resource type="RectangleShape2D" id="Shape_bara"]
+size = Vector2(10, 5)
+
+[sub_resource type="RectangleShape2D" id="Shape_rehan"]
+size = Vector2(10, 5)
+
+[sub_resource type="ShaderMaterial" id="Mat_eyes"]
+shader = ExtResource("5_eyes")
+shader_parameter/open = 0.0
+shader_parameter/blur = 0.0
+shader_parameter/softness = 0.12
+
+[sub_resource type="StyleBoxFlat" id="Style_objective"]
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 2.0
+bg_color = Color(0.03, 0.05, 0.12, 0.8)
+border_width_left = 2
+border_color = Color(1, 0.7, 0.3, 1)
+
+[node name="Chapter1" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="Room" type="Node2D" parent="."]
+script = ExtResource("2_room")
+
+[node name="Actors" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Bara" type="CharacterBody2D" parent="Actors"]
+position = Vector2(116, 150)
+motion_mode = 1
+script = ExtResource("3_player")
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/Bara"]
+position = Vector2(0, -2)
+shape = SubResource("Shape_bara")
+
+[node name="Visual" type="Node2D" parent="Actors/Bara"]
+script = ExtResource("4_visual")
+body_color = Color(0.35, 0.55, 0.95, 1)
+
+[node name="Rehan" type="StaticBody2D" parent="Actors"]
+position = Vector2(356, 34)
+
+[node name="Collision" type="CollisionShape2D" parent="Actors/Rehan"]
+position = Vector2(0, -2)
+shape = SubResource("Shape_rehan")
+
+[node name="Visual" type="Node2D" parent="Actors/Rehan"]
+script = ExtResource("4_visual")
+body_color = Color(0.95, 0.55, 0.25, 1)
+body_size = Vector2(10, 15)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(192, 108)
+
+[node name="DoorSfx" type="AudioStreamPlayer" parent="."]
+volume_db = -2.0
+
+[node name="HUD" type="CanvasLayer" parent="."]
+layer = 5
+
+[node name="Objective" type="PanelContainer" parent="HUD"]
+offset_left = 0.0
+offset_top = 6.0
+offset_right = 120.0
+offset_bottom = 22.0
+theme_override_styles/panel = SubResource("Style_objective")
+
+[node name="VBox" type="VBoxContainer" parent="HUD/Objective"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Title" type="Label" parent="HUD/Objective/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.4, 1)
+theme_override_font_sizes/font_size = 5
+text = "TUJUAN"
+
+[node name="Text" type="Label" parent="HUD/Objective/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 7
+text = "Bersihkan ventilasi kapal"
+
+[node name="EyeLayer" type="CanvasLayer" parent="."]
+layer = 20
+
+[node name="Eyes" type="ColorRect" parent="EyeLayer"]
+material = SubResource("Mat_eyes")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="DialogueBox" parent="." instance=ExtResource("6_dialogue")]
