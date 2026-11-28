@@ -1,17 +1,20 @@
 class_name EnemyUnit
-extends Node2D
-## One enemy on the battlefield.
+extends BattleUnit
+## One enemy on the battlefield. Its animation poses (attack, hurt, windup,
+## stunned, die, idle) are explained in battle/BattleUnit.gd.
 ##
 ## Look: edit battle/EnemyUnit.tscn (the shared base) or, for one enemy type,
 ## its own scene in battle/units/ (these inherit this scene). Then drag that
 ## scene into the enemy's `unit_scene` slot (data/enemies/*.tres).
 ## Scene contract (unique names, keep them when restyling):
-##   %Visual     Node2D holding the art; flash and the wind-up shift act on it
+##   %Visual     Node2D holding the art; flash and the built-in motions act on it
 ##   %Body       the art itself: a ColorRect now, replace with Sprite2D /
 ##               AnimatedSprite2D freely (anything inside %Visual works)
 ##   %NameLabel  Label, shows "name\nhp/max"
 ##   %Alert      the "!" shown while an archer winds up
 ##   %ClickArea  Control that receives clicks (resize it to fit the art)
+## Optional, for your own animations (see BattleUnit.gd):
+##   %Anim (AnimationPlayer)  or  %Sprite (AnimatedSprite2D)
 
 signal clicked(unit: EnemyUnit)
 
@@ -20,11 +23,15 @@ var hp := 0
 ## Only set when the enemy has no scene of its own: tints the default box.
 var fallback_tint := Color(0, 0, 0, 0)
 
-@onready var _visual: Node2D = %Visual
 @onready var _body: CanvasItem = %Body
 @onready var _label: Label = %NameLabel
 @onready var _alert: CanvasItem = %Alert
 @onready var _click: Control = %ClickArea
+
+
+## Enemies stand on the right and hit toward Bara, so their lunge goes left.
+func _lunge() -> Vector2:
+	return Vector2(-lunge_distance, 0.0)
 
 
 func setup(d: EnemyData) -> EnemyUnit:
@@ -38,6 +45,7 @@ func _ready() -> void:
 		_body.color = fallback_tint
 	_click.gui_input.connect(_on_click_input)
 	refresh()
+	super._ready()   # starts the idle pose
 
 
 func is_alive() -> bool:
@@ -48,16 +56,19 @@ func take_damage(amount: int) -> void:
 	hp = maxi(hp - amount, 0)
 	refresh()
 	flash()
+	if hp > 0:   # a defeated enemy plays its die pose instead (see die())
+		play_pose(HURT)
 
 
 func refresh() -> void:
 	_label.text = "%s\n%d/%d" % [data.label(), hp, data.max_hp]
 
 
-## Wind-up pose before a ranged shot: tells the player to get ready to block.
+## Wind-up before a ranged shot: tells the player to get ready to block.
+## Plays the `windup` pose (holds its last frame) until it is switched off.
 func set_telegraph(on: bool) -> void:
 	_alert.visible = on
-	_visual.position.x = -3.0 if on else 0.0
+	play_pose(WINDUP if on else IDLE)
 
 
 func flash() -> void:
@@ -65,9 +76,10 @@ func flash() -> void:
 	create_tween().tween_property(_visual, "modulate", Color.WHITE, 0.15)
 
 
-## Fade out and free. Awaitable.
+## Plays the `die` pose, then fades out and frees. Awaitable.
 func die() -> void:
 	var t := create_tween()
+	t.tween_interval(play_pose(DIE))
 	t.tween_property(self, "modulate:a", 0.0, 0.3)
 	await t.finished
 	queue_free()

@@ -1,0 +1,90 @@
+[gd_scene format=4 uid="uid://cdbn376p0sqei"]
+
+[ext_resource type="Script" path="res://DalamKapal/SpaceBackground.gd" id="1_space"]
+[ext_resource type="Script" path="res://DalamKapal/ShipCamera.gd" id="3_camera"]
+[ext_resource type="TileSet" path="res://DalamKapal/ShipTileSet.tres" id="4_tileset"]
+[ext_resource type="Texture2D" path="res://asset/FelixArea/Nebula Blue.png" id="5_nebula"]
+[ext_resource type="Texture2D" path="res://asset/FelixArea/Stars Small_2.png" id="6_stars_far"]
+[ext_resource type="Texture2D" path="res://asset/FelixArea/Stars Small_1.png" id="7_stars_mid"]
+[ext_resource type="Texture2D" path="res://asset/FelixArea/Stars-Big_1_2_PC.png" id="8_stars_near"]
+
+[node name="RuangVentilasi" type="Node2D" unique_id=313740684]
+
+[node name="SpaceBackground" type="Node2D" parent="." unique_id=569537837]
+texture_filter = 4
+script = ExtResource("1_space")
+
+[node name="Nebula" type="Parallax2D" parent="SpaceBackground" unique_id=1813935830]
+scroll_scale = Vector2(0.05, 0.05)
+repeat_size = Vector2(1024, 1024)
+repeat_times = 2
+screen_offset = Vector2(64, -16)
+
+[node name="Sprite" type="Sprite2D" parent="SpaceBackground/Nebula" unique_id=1289216195]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_nebula")
+centered = false
+
+[node name="StarsFar" type="Parallax2D" parent="SpaceBackground" unique_id=1339038292]
+modulate = Color(0.8, 0.85, 1, 0.6)
+scroll_scale = Vector2(0.15, 0.15)
+repeat_size = Vector2(512, 512)
+repeat_times = 2
+screen_offset = Vector2(64, -16)
+
+[node name="Sprite" type="Sprite2D" parent="SpaceBackground/StarsFar" unique_id=1729198981]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("6_stars_far")
+centered = false
+
+[node name="StarsMid" type="Parallax2D" parent="SpaceBackground" unique_id=18197199]
+modulate = Color(0.9, 0.95, 1, 0.8)
+scroll_scale = Vector2(0.35, 0.35)
+repeat_size = Vector2(640, 640)
+repeat_times = 2
+screen_offset = Vector2(64, -16)
+
+[node name="Sprite" type="Sprite2D" parent="SpaceBackground/StarsMid" unique_id=942374087]
+scale = Vector2(0.3125, 0.3125)
+texture = ExtResource("7_stars_mid")
+centered = false
+
+[node name="StarsNear" type="Parallax2D" parent="SpaceBackground" unique_id=2055686275]
+scroll_scale = Vector2(0.65, 0.65)
+repeat_size = Vector2(768, 768)
+repeat_times = 2
+screen_offset = Vector2(64, -16)
+
+[node name="Sprite" type="Sprite2D" parent="SpaceBackground/StarsNear" unique_id=1429718509]
+scale = Vector2(0.375, 0.375)
+texture = ExtResource("8_stars_near")
+centered = false
+
+[node name="Ship" type="Node2D" parent="." unique_id=799650351]
+
+[node name="Floor" type="TileMapLayer" parent="Ship" unique_id=1950010703]
+tile_map_data = PackedByteArray("AAABAAEAAAABAAEAAAACAAEAAAABAAEAAAADAAEAAAABAAEAAAAEAAEAAAABAAEAAAAFAAEAAAABAAEAAAAGAAEAAAABAAEAAAAHAAEAAAABAAEAAAAIAAEAAAABAAEAAAAJAAEAAAABAAEAAAAKAAEAAAABAAEAAAALAAEAAAABAAEAAAAMAAEAAAABAAUAAAABAAIAAAABAAEAAAACAAIAAAABAAUAAAADAAIAAAACAAMAAAAEAAIAAAABAAEAAAAFAAIAAAABAAEAAAAGAAIAAAABAAEAAAAHAAIAAAABAAUAAAAIAAIAAAABAAEAAAAJAAIAAAABAAEAAAAKAAIAAAABAAEAAAALAAIAAAABAAUAAAAMAAIAAAABAAUAAAABAAMAAAABAAEAAAACAAMAAAABAAEAAAADAAMAAAABAAEAAAAEAAMAAAABAAEAAAAFAAMAAAABAAEAAAAGAAMAAAABAAEAAAAHAAMAAAABAAEAAAAIAAMAAAABAAEAAAAJAAMAAAABAAEAAAAKAAMAAAABAAUAAAALAAMAAAABAAEAAAAMAAMAAAABAAEAAAABAAQAAAABAAEAAAACAAQAAAABAAEAAAADAAQAAAABAAUAAAAEAAQAAAAAAAMAAAAFAAQAAAAAAAMAAAAGAAQAAAAAAAMAAAAHAAQAAAAAAAMAAAAIAAQAAAAAAAMAAAAJAAQAAAAAAAMAAAAKAAQAAAABAAEAAAALAAQAAAABAAEAAAAMAAQAAAABAAEAAAABAAUAAAABAAEAAAACAAUAAAABAAEAAAADAAUAAAABAAEAAAAEAAUAAAABAAEAAAAFAAUAAAABAAEAAAAGAAUAAAABAAEAAAAHAAUAAAABAAEAAAAIAAUAAAABAAEAAAAJAAUAAAABAAEAAAAKAAUAAAABAAEAAAALAAUAAAABAAEAAAAMAAUAAAABAAUAAAABAAYAAAABAAEAAAACAAYAAAABAAUAAAADAAYAAAABAAEAAAAEAAYAAAABAAEAAAAFAAYAAAABAAEAAAAGAAYAAAABAAEAAAAHAAYAAAABAAEAAAAIAAYAAAABAAEAAAAJAAYAAAABAAEAAAAKAAYAAAACAAMAAAALAAYAAAABAAEAAAAMAAYAAAABAAEAAAABAAcAAAABAAEAAAACAAcAAAABAAEAAAADAAcAAAABAAEAAAAEAAcAAAABAAUAAAAFAAcAAAABAAEAAAAGAAcAAAABAAEAAAAHAAcAAAABAAUAAAAIAAcAAAABAAEAAAAJAAcAAAABAAEAAAAKAAcAAAABAAEAAAALAAcAAAABAAMAAAAMAAcAAAABAAMAAAA=")
+tile_set = ExtResource("4_tileset")
+
+[node name="Hull" type="TileMapLayer" parent="Ship" unique_id=411972023]
+tile_map_data = PackedByteArray("AAABAAAAAAAEAAAAAAABAAgAAAAEAAIAAAACAAAAAAAEAAAAAAACAAgAAAAEAAIAAAADAAAAAAAIAAIAAAADAAgAAAAEAAIAAAAEAAAAAAAEAAAAAAAEAAgAAAAEAAIAAAAFAAAAAAAEAAAAAAAFAAgAAAAEAAIAAAAGAAAAAAAGAAIAAAAGAAgAAAAEAAIAAAAHAAAAAAAEAAAAAAAHAAgAAAAEAAIAAAAIAAAAAAAGAAIAAAAIAAgAAAAEAAIAAAAJAAAAAAAEAAAAAAAJAAgAAAAEAAIAAAAKAAAAAAAEAAQAAAAKAAgAAAAEAAYAAAALAAAAAAAHAAUAAAALAAgAAAAEAAYAAAAMAAAAAAAEAAQAAAAMAAgAAAAEAAYAAAAAAAEAAAADAAEAAAANAAEAAAAFAAUAAAAAAAIAAAADAAEAAAANAAIAAAAFAAUAAAAAAAMAAAADAAEAAAANAAMAAAAFAAUAAAAAAAQAAAADAAEAAAANAAQAAAAFAAUAAAAAAAUAAAADAAEAAAANAAUAAAAFAAUAAAAAAAYAAAADAAEAAAANAAYAAAAFAAUAAAAAAAcAAAADAAEAAAANAAcAAAAFAAUAAAAAAAAAAAADAAAAAAANAAAAAAAFAAQAAAAAAAgAAAADAAIAAAANAAgAAAAFAAYAAAA=")
+tile_set = ExtResource("4_tileset")
+
+[node name="Props" type="TileMapLayer" parent="Ship" unique_id=1970351280]
+y_sort_enabled = true
+tile_map_data = PackedByteArray("AAABAAEAAAAJAAEAAAACAAEAAAAIAAEAAAABAAUAAAADAAMAAAABAAYAAAAEAAMAAAAFAAEAAAAFAAMAAAAGAAEAAAAIAAMAAAAHAAYAAAAJAAMAAAAMAAEAAAAEAAcAAAALAAMAAAAAAAcAAAAMAAUAAAACAAcAAAA=")
+tile_set = ExtResource("4_tileset")
+
+[node name="Actors" type="Node2D" parent="." unique_id=51153753]
+y_sort_enabled = true
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=611854149]
+position = Vector2(224, 144)
+limit_left = -40
+limit_top = -40
+limit_right = 488
+limit_bottom = 328
+position_smoothing_enabled = true
+position_smoothing_speed = 6.0
+script = ExtResource("3_camera")
+space_margin = 40.0

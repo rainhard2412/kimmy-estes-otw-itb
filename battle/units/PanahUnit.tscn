@@ -1,8 +1,234 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://blt8tlxqmq5rj"]
 
 [ext_resource type="PackedScene" path="res://battle/EnemyUnit.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://damcvuwbxl8fb" path="res://asset/enemy/panah-prepare.png" id="2_t3d4m"]
+[ext_resource type="Texture2D" uid="uid://vg763smc0qem" path="res://asset/enemy/panah-wind-2.png" id="3_fvk67"]
 
-[node name="PanahUnit" instance=ExtResource("1")]
+[sub_resource type="Animation" id="Animation_s3iph"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [null]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Sprite2D:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual/Sprite2D:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Visual/Sprite2D:flip_h")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("arrow_windup:emitting")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_t3d4m"]
+resource_name = "idle"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("2_t3d4m")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Sprite2D:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.015, 0.015)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual/Sprite2D:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(20, 15.712)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Visual/Sprite2D:flip_h")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_q67j6"]
+resource_name = "windup"
+length = 0.36666667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("3_fvk67")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Sprite2D:flip_h")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.099999994),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("arrow_windup:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fvk67"]
+_data = {
+&"RESET": SubResource("Animation_s3iph"),
+&"idle": SubResource("Animation_t3d4m"),
+&"windup": SubResource("Animation_q67j6")
+}
+
+[sub_resource type="Gradient" id="Gradient_g4bl1"]
+colors = PackedColorArray(0.75416577, 0.0004780346, 0.76246965, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_hrcr8"]
+gradient = SubResource("Gradient_g4bl1")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5399306, 0.578125)
+
+[sub_resource type="Curve" id="Curve_lq8mw"]
+_data = [Vector2(0, 1), 0.0, 2.810441, 0, 0, Vector2(0.48387095, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_oy3u6"]
+curve = SubResource("Curve_lq8mw")
+
+[sub_resource type="Curve" id="Curve_fvk67"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.95161295, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_kie5o"]
+curve = SubResource("Curve_fvk67")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_60lr0"]
+lifetime_randomness = 0.47
+particle_flag_disable_z = true
+direction = Vector3(0.125, 0, 0)
+initial_velocity_min = 167.37999
+initial_velocity_max = 300.43
+angular_velocity_min = -92.70001
+angular_velocity_max = 463.51996
+radial_velocity_min = 326.17996
+radial_velocity_max = 326.17996
+gravity = Vector3(0, 0, 0)
+scale_min = 0.29999998
+scale_max = 0.65
+scale_curve = SubResource("CurveTexture_kie5o")
+emission_curve = SubResource("CurveTexture_oy3u6")
+
+[node name="PanahUnit" unique_id=1349929827 instance=ExtResource("1")]
 
 [node name="Body" parent="Visual" index="0"]
-color = Color(0.55, 0.3, 0.75, 1)
+color = Color(0.54901963, 0.3019608, 0.7490196, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Visual" index="1" unique_id=1608423966]
+flip_h = true
+
+[node name="Anim" type="AnimationPlayer" parent="." index="4" unique_id=871012567]
+unique_name_in_owner = true
+libraries/ = SubResource("AnimationLibrary_fvk67")
+
+[node name="arrow_windup" type="GPUParticles2D" parent="." index="5" unique_id=194003860]
+position = Vector2(5, 15)
+emitting = false
+amount = 29
+amount_ratio = 0.575
+texture = SubResource("GradientTexture2D_hrcr8")
+lifetime = 0.14
+one_shot = true
+speed_scale = 1.8199999999999998
+explosiveness = 1.0
+randomness = 0.9
+trail_enabled = true
+trail_lifetime = 0.2
+trail_sections = 56
+process_material = SubResource("ParticleProcessMaterial_60lr0")
