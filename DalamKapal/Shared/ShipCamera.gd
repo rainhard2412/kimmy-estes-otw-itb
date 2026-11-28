@@ -2,12 +2,14 @@ class_name ShipCamera
 extends Camera2D
 ## Camera for ship rooms.
 ##
-## Follows `target` when one is set (e.g. the player). Without a target it switches to
-## free-look: WASD / arrow keys pan the view, which is handy for previewing a room.
+## Two modes:
+## - fit_room (default): zooms so the whole room fits on screen and holds still. Every
+##   door, fan and prop stays visible, whatever the player is doing.
+## - follow: with fit_room off and a `target` set, tracks the target. Without a target
+##   it falls back to free-look, where WASD / arrow keys pan the view.
 ##
-## Limits are the room rectangle grown by `space_margin`, so the camera can look a little
-## past the hull and the scrolling space stays visible. When the view is larger than that
-## area (zoomed out), the room is kept centred instead of pinned to one edge.
+## In follow / free-look the limits are the room rectangle grown by `space_margin`, so
+## the camera can look a little past the hull and the scrolling space stays visible.
 
 @export var target: Node2D
 ## Room rectangle in the camera parent's local pixels (the room's origin).
@@ -15,16 +17,25 @@ extends Camera2D
 ## How far past the hull the camera may look, in pixels.
 @export var space_margin := 48.0
 @export var free_look_speed := 120.0
+## Frame the whole room instead of following. Recommended for single-screen rooms.
+@export var fit_room := true:
+	set(value):
+		fit_room = value
+		if is_node_ready():
+			_apply_mode()
+## Space left around the room in fit_room mode, in world pixels.
+@export var fit_padding := 12.0
 
 
 func _ready() -> void:
-	position_smoothing_enabled = true
 	position_smoothing_speed = 6.0
-	_update_limits()
-	get_viewport().size_changed.connect(_update_limits)
+	_apply_mode()
+	get_viewport().size_changed.connect(_apply_mode)
 
 
 func _process(delta: float) -> void:
+	if fit_room:
+		return
 	if is_instance_valid(target):
 		global_position = target.global_position
 		return
@@ -35,6 +46,30 @@ func _process(delta: float) -> void:
 	position = position.clamp(
 		Vector2(limit_left, limit_top) + half,
 		Vector2(limit_right, limit_bottom) - half)
+
+
+func _apply_mode() -> void:
+	if fit_room:
+		_fit_to_room()
+	else:
+		position_smoothing_enabled = true
+		_update_limits()
+
+
+## Zoom so room_rect plus padding fills the view, centred on the room.
+func _fit_to_room() -> void:
+	position_smoothing_enabled = false
+	var view := get_viewport_rect().size
+	var needed := room_rect.size + Vector2.ONE * fit_padding * 2.0
+	var z := minf(view.x / needed.x, view.y / needed.y)
+	zoom = Vector2(z, z)
+	position = room_rect.get_center()
+	# Limits wide open: the fitted view may show a little space around the hull.
+	limit_left = -10000000
+	limit_top = -10000000
+	limit_right = 10000000
+	limit_bottom = 10000000
+	reset_smoothing()
 
 
 func _update_limits() -> void:
